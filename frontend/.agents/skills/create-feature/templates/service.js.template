@@ -1,0 +1,14 @@
+import { get__Name__Api } from '../api/get__Name__Api.js';
+import { get__Names__Api } from '../api/get__Names__Api.js';
+
+export async function load__Name__(id) {
+  const data = await get__Name__Api(id);
+  // TODO: Geschäftslogik
+  return data;
+}
+
+export async function load__Names__() {
+  const data = await get__Names__Api();
+  // TODO: Geschäftslogik
+  return data;
+}

@@ -1,0 +1,7 @@
+export async function get__Names__Api() {
+  const res = await fetch('/api/__names__');
+  if (!res.ok) {
+    throw new Error(`Fehler beim Laden von __names__: ${res.status}`);
+  }
+  return res.json();
+}

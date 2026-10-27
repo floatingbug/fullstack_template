@@ -1,0 +1,27 @@
+import { describe, it, expect } from 'vitest';
+import de from '@/locales/de.json';
+import en from '@/locales/en.json';
+import { __name__Items } from './__name__Items.js';
+
+const resolve = (messages, key) =>
+  key.split('.').reduce((obj, part) => obj?.[part], messages);
+
+describe('__name__Items', () => {
+  it('verwendet eindeutige ids', () => {
+    const ids = __name__Items.map((item) => item.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('bildet labelKey als "__name__.<id>"', () => {
+    for (const item of __name__Items) {
+      expect(item.labelKey).toBe(`__name__.${item.id}`);
+    }
+  });
+
+  it('hat für jeden labelKey einen Text in de und en', () => {
+    for (const item of __name__Items) {
+      expect(resolve(de, item.labelKey), `de: ${item.labelKey}`).toBeTypeOf('string');
+      expect(resolve(en, item.labelKey), `en: ${item.labelKey}`).toBeTypeOf('string');
+    }
+  });
+});

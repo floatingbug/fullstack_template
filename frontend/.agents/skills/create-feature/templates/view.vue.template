@@ -1,0 +1,21 @@
+<script setup>
+import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { use__Name__Store } from '../../store/__name__Store.js';
+
+const { t } = useI18n();
+const store = use__Name__Store();
+
+onMounted(() => {
+  // TODO: passend zur View laden, z. B. store.fetchOne(id) bei einer Detailansicht
+  store.fetchAll();
+});
+</script>
+
+<template>
+  <main>
+    <h1>{{ t('__name__.title') }}</h1>
+    <!-- TODO: Inhalt der View. Einzelne Texte direkt über t('__name__.<key>').
+         Listen per v-for über Items (Import aus ../items/__name__Items.js), Texte über t(item.labelKey). -->
+  </main>
+</template>

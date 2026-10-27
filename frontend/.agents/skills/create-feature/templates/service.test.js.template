@@ -1,0 +1,28 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { get__Name__Api } from '../api/get__Name__Api.js';
+import { get__Names__Api } from '../api/get__Names__Api.js';
+import { load__Name__, load__Names__ } from './__name__Service.js';
+
+vi.mock('../api/get__Name__Api.js', () => ({ get__Name__Api: vi.fn() }));
+vi.mock('../api/get__Names__Api.js', () => ({ get__Names__Api: vi.fn() }));
+
+describe('__name__Service', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('load__Name__ gibt den Datensatz der API zurück', async () => {
+    get__Name__Api.mockResolvedValue({ id: 1 });
+
+    expect(await load__Name__(1)).toEqual({ id: 1 });
+    expect(get__Name__Api).toHaveBeenCalledWith(1);
+  });
+
+  it('load__Names__ gibt die Liste der API zurück', async () => {
+    get__Names__Api.mockResolvedValue([{ id: 1 }]);
+
+    expect(await load__Names__()).toEqual([{ id: 1 }]);
+  });
+
+  // TODO: Tests für die Geschäftslogik
+});
