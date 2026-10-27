@@ -1,0 +1,72 @@
+@use './variables' as *;
+
+:root {
+  --space-xs: #{$space-xs};
+  --space-sm: #{$space-sm};
+  --space-md: #{$space-md};
+  --space-lg: #{$space-lg};
+  --space-xl: #{$space-xl};
+
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+
+  --font-family-base: #{$font-family-base};
+  --font-size-base: #{$font-size-base};
+  --line-height-base: #{$line-height-base};
+
+  --color-text: #{$color-text};
+  --color-text-muted: #{$color-text-muted};
+  --color-bg: #{$color-bg};
+  --color-bg-muted: #{$color-bg-muted};
+  --color-border: #{$color-border};
+  --color-primary: #{$color-primary};
+  --color-primary-contrast: #{$color-primary-contrast};
+  --color-danger: #{$color-danger};
+
+  --topbar-height: #{$topbar-height};
+  --footer-height: #{$footer-height};
+  --sidebar-width: #{$sidebar-width};
+
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+#app {
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0 0 var(--space-md);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+button {
+  font: inherit;
+}

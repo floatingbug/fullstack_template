@@ -1,0 +1,5 @@
+import { apiFetch } from '@/shared/api/apiFetch.js';
+
+export function get__Names__Api() {
+  return apiFetch('/__names__');
+}

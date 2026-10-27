@@ -1,0 +1,26 @@
+{
+  "app": {
+    "name": "Fullstack Template"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "home": "Home",
+    "account": "Account"
+  },
+  "user": {
+    "menu": "User menu"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "placeholderTitle": "Authentication",
+    "placeholderText": "This page has not been implemented yet."
+  },
+  "home": {
+    "title": "Welcome",
+    "description": "The Vue frontend and the Express backend are ready for the first feature."
+  },
+  "footer": {
+    "copyright": "© {year} Fullstack Template"
+  }
+}

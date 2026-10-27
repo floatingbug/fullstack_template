@@ -1,0 +1,13 @@
+import AppLayout from '@/app/layouts/AppLayout.vue'
+
+export default {
+  path: '/',
+  component: AppLayout,
+  children: [
+    {
+      path: '__names__',
+      name: '__name__',
+      component: () => import('../ui/views/__Name__View.vue'),
+    },
+  ],
+}

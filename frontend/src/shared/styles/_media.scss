@@ -1,0 +1,13 @@
+// Usage: @use "@/shared/styles/media" as media; then @include media.up(bp.$bp-lg) { ... }
+
+@mixin up($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin down($width) {
+  @media (max-width: ($width - 0.02px)) {
+    @content;
+  }
+}

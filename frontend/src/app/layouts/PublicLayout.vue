@@ -1,49 +1,49 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
-import { Topbar, Footer, Logo, CurrPath } from '@/shared/components'
+import { useRouter } from 'vue-router'
+
+import { Logo, Topbar, Footer } from '@/shared/components'
 import { AuthButtons } from './components'
 
 const router = useRouter()
-const route = useRoute();
 
-function onAuthButtonActions(event) {
-	switch (event.action) {
-		case 'signIn':
-			router.push('/auth/signin')
-		break
-
-		case 'signUp':
-			router.push('/auth/signUp')
-		break
-	}
+const routes = {
+  signIn: '/auth/sign-in',
+  signUp: '/auth/sign-up',
 }
 
+function onAuthButtonActions({ action }) {
+  const path = routes[action]
+
+  if (path) {
+    router.push(path)
+  }
+}
 </script>
 
 <template>
-	<div class="topbar-container">
-		<header>
-			<Topbar>
-				<template #topbarLeft>
-					<div class="nav-primary">
-						<Logo />
-					</div>
-				</template>
+  <div class="topbar-container">
+    <header>
+      <Topbar>
+        <template #start>
+          <div class="nav-primary">
+            <Logo @logo:press="router.push('/')" />
+          </div>
+        </template>
 
-				<template #topbarRight>
-					<AuthButtons @authButton:action="onAuthButtonActions" />
-				</template>
-			</Topbar>
-		</header>
+        <template #end>
+          <AuthButtons @authButton:action="onAuthButtonActions" />
+        </template>
+      </Topbar>
+    </header>
 
-		<main>
-			<RouterView />
-		</main>
+    <main>
+      <RouterView />
+    </main>
 
-		<footer>
-			<Footer />
-		</footer>
-	</div>
+    <footer>
+      <Footer />
+    </footer>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -51,27 +51,27 @@ function onAuthButtonActions(event) {
 @use '@/shared/styles/breakpoints' as bp;
 
 .topbar-container {
-	height: 100%;
-	display: grid;
-	grid-template-rows: auto 1fr auto;
-	grid-template-columns: 1fr;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
 }
 
 header {
-	height: var(--topbar-height);
+  height: var(--topbar-height);
 }
 
 footer {
-	height: var(--footer-height);
+  height: var(--footer-height);
 }
 
 .nav-primary {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 
-	@include media.up(bp.$bp-md) {
-		flex-direction: row-reverse;
-		gap: var(--space-md);
-	}
+  @include media.up(bp.$bp-md) {
+    flex-direction: row-reverse;
+    gap: var(--space-md);
+  }
 }
 </style>

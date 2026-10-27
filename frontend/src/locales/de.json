@@ -1,0 +1,26 @@
+{
+  "app": {
+    "name": "Fullstack Template"
+  },
+  "nav": {
+    "main": "Hauptnavigation",
+    "home": "Start",
+    "account": "Konto"
+  },
+  "user": {
+    "menu": "Benutzermenü"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "placeholderTitle": "Authentifizierung",
+    "placeholderText": "Diese Seite wird noch umgesetzt."
+  },
+  "home": {
+    "title": "Willkommen",
+    "description": "Vue-Frontend und Express-Backend sind bereit für das erste Feature."
+  },
+  "footer": {
+    "copyright": "© {year} Fullstack Template"
+  }
+}
