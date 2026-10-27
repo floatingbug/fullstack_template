@@ -2,16 +2,24 @@
 import { useRouter } from 'vue-router'
 
 import { Logo, Topbar, Footer } from '@/shared/components'
+import { useAuthStore } from '@/features/auth/store/authStore.js'
 import { AuthButtons } from './components'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const routes = {
   signIn: '/auth/sign-in',
   signUp: '/auth/sign-up',
 }
 
-function onAuthButtonActions({ action }) {
+async function onAuthButtonActions({ action }) {
+  if (action === 'signOut') {
+    await authStore.signOut()
+    await router.push('/')
+    return
+  }
+
   const path = routes[action]
 
   if (path) {
@@ -31,7 +39,11 @@ function onAuthButtonActions({ action }) {
         </template>
 
         <template #end>
-          <AuthButtons @authButton:action="onAuthButtonActions" />
+          <AuthButtons
+            :is-authenticated="authStore.isAuthenticated"
+            :user-name="authStore.user?.name ?? ''"
+            @authButton:action="onAuthButtonActions"
+          />
         </template>
       </Topbar>
     </header>

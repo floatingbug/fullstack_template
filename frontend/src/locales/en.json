@@ -8,17 +8,78 @@
     "account": "Account"
   },
   "user": {
-    "menu": "User menu"
+    "menu": "User menu",
+    "signOut": "Sign out"
   },
   "auth": {
     "signIn": "Sign in",
     "signUp": "Sign up",
-    "placeholderTitle": "Authentication",
-    "placeholderText": "This page has not been implemented yet."
+    "signOut": "Sign out",
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create account",
+    "forgotPasswordTitle": "Forgot password",
+    "resetPasswordTitle": "Set a new password",
+    "verifyEmailTitle": "Verify email",
+    "confirmEmailChangeTitle": "Confirm new email",
+    "email": "Email",
+    "emailOrName": "Email or name",
+    "name": "Name",
+    "password": "Password",
+    "newPassword": "New password",
+    "passwordConfirm": "Repeat password",
+    "passwordHint": "At least 8 characters, including uppercase, lowercase and a number.",
+    "submitForgot": "Request link",
+    "submitReset": "Save password",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordDescription": "Enter your email address. We will send you a reset link.",
+    "resetPasswordDescription": "Choose a new password for your account.",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already registered?",
+    "backToSignIn": "Back to sign in",
+    "backHome": "Back to home",
+    "signUpSuccessTitle": "Almost done",
+    "signUpSuccess": "We sent an email to {email}. Please verify your address.",
+    "signUpSuccessHint": "You can sign in after verifying your address.",
+    "forgotSuccess": "If an account with this address exists, a reset link has been sent.",
+    "resetSuccess": "Your password has been changed. You can sign in now.",
+    "resendVerification": "Resend verification email",
+    "verificationSent": "If the account is not verified yet, a new email has been sent.",
+    "verifyEmailLoading": "Verifying your email …",
+    "verifyEmailSuccess": "Your email address has been verified.",
+    "verifyEmailFailedHint": "Open the link from the email again or request a new verification email on the sign-in page.",
+    "confirmEmailLoading": "Confirming your email address …",
+    "confirmEmailSuccess": "Your email address has been changed to {email}.",
+    "confirmEmailSuccessGeneric": "Your email address has been changed.",
+    "confirmEmailFailedHint": "The confirmation link is invalid or expired. Please start the email change again.",
+    "errors": {
+      "requiredFields": "Please fill in all required fields.",
+      "invalidCredentials": "Email/name or password is incorrect.",
+      "emailNotVerified": "Please verify your email address first.",
+      "accountExists": "Name or email address is already taken.",
+      "mailFailed": "The email could not be sent. Please try again later.",
+      "invalidInput": "Please check your input.",
+      "nameLength": "The name must be between 3 and 50 characters long.",
+      "nameFormat": "The name may only contain letters, numbers, dots, underscores and hyphens.",
+      "emailFormat": "Please enter a valid email address.",
+      "passwordLength": "The password must be between 8 and 128 characters long.",
+      "passwordRequirements": "The password needs uppercase and lowercase letters and at least one number.",
+      "passwordMismatch": "The passwords do not match.",
+      "invalidToken": "The link is invalid or expired.",
+      "tokenMissing": "The link is incomplete. Please request a new link.",
+      "resetFailed": "The link is invalid or expired, or the password does not meet the rules.",
+      "emailTaken": "This email address is already taken.",
+      "network": "The server is not reachable. Please check your connection.",
+      "generic": "Something went wrong. Please try again."
+    }
   },
   "home": {
     "title": "Welcome",
     "description": "The Vue frontend and the Express backend are ready for the first feature."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The requested page does not exist or has been moved.",
+    "home": "Back to home"
   },
   "footer": {
     "copyright": "© {year} Fullstack Template"

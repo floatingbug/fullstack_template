@@ -8,17 +8,78 @@
     "account": "Konto"
   },
   "user": {
-    "menu": "Benutzermenü"
+    "menu": "Benutzermenü",
+    "signOut": "Abmelden"
   },
   "auth": {
     "signIn": "Anmelden",
     "signUp": "Registrieren",
-    "placeholderTitle": "Authentifizierung",
-    "placeholderText": "Diese Seite wird noch umgesetzt."
+    "signOut": "Abmelden",
+    "signInTitle": "Anmelden",
+    "signUpTitle": "Konto erstellen",
+    "forgotPasswordTitle": "Passwort vergessen",
+    "resetPasswordTitle": "Neues Passwort setzen",
+    "verifyEmailTitle": "E-Mail bestätigen",
+    "confirmEmailChangeTitle": "Neue E-Mail bestätigen",
+    "email": "E-Mail",
+    "emailOrName": "E-Mail oder Name",
+    "name": "Name",
+    "password": "Passwort",
+    "newPassword": "Neues Passwort",
+    "passwordConfirm": "Passwort wiederholen",
+    "passwordHint": "Mindestens 8 Zeichen, mit Groß- und Kleinbuchstaben und einer Zahl.",
+    "submitForgot": "Link anfordern",
+    "submitReset": "Passwort speichern",
+    "forgotPassword": "Passwort vergessen?",
+    "forgotPasswordDescription": "Gib deine E-Mail-Adresse ein. Wir senden dir einen Link zum Zurücksetzen.",
+    "resetPasswordDescription": "Wähle ein neues Passwort für dein Konto.",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Schon registriert?",
+    "backToSignIn": "Zur Anmeldung",
+    "backHome": "Zur Startseite",
+    "signUpSuccessTitle": "Fast geschafft",
+    "signUpSuccess": "Wir haben dir eine E-Mail an {email} geschickt. Bitte bestätige deine Adresse.",
+    "signUpSuccessHint": "Erst nach der Bestätigung kannst du dich anmelden.",
+    "forgotSuccess": "Wenn ein Konto mit dieser Adresse existiert, wurde ein Link zum Zurücksetzen verschickt.",
+    "resetSuccess": "Dein Passwort wurde geändert. Du kannst dich jetzt anmelden.",
+    "resendVerification": "Verifizierungsmail erneut senden",
+    "verificationSent": "Wenn das Konto noch nicht bestätigt ist, wurde eine neue E-Mail verschickt.",
+    "verifyEmailLoading": "E-Mail wird bestätigt …",
+    "verifyEmailSuccess": "Deine E-Mail-Adresse wurde bestätigt.",
+    "verifyEmailFailedHint": "Öffne den Link aus der E-Mail erneut oder fordere auf der Anmeldeseite eine neue Verifizierungsmail an.",
+    "confirmEmailLoading": "E-Mail-Adresse wird bestätigt …",
+    "confirmEmailSuccess": "Deine E-Mail-Adresse wurde auf {email} geändert.",
+    "confirmEmailSuccessGeneric": "Deine E-Mail-Adresse wurde geändert.",
+    "confirmEmailFailedHint": "Der Bestätigungslink ist ungültig oder abgelaufen. Bitte starte den E-Mail-Wechsel erneut.",
+    "errors": {
+      "requiredFields": "Bitte fülle alle Pflichtfelder aus.",
+      "invalidCredentials": "E-Mail/Name oder Passwort ist falsch.",
+      "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse.",
+      "accountExists": "Name oder E-Mail-Adresse ist bereits vergeben.",
+      "mailFailed": "Die E-Mail konnte nicht versendet werden. Bitte versuche es später erneut.",
+      "invalidInput": "Bitte prüfe deine Eingaben.",
+      "nameLength": "Der Name muss zwischen 3 und 50 Zeichen lang sein.",
+      "nameFormat": "Der Name darf nur Buchstaben, Zahlen, Punkte, Unterstriche und Bindestriche enthalten.",
+      "emailFormat": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "passwordLength": "Das Passwort muss zwischen 8 und 128 Zeichen lang sein.",
+      "passwordRequirements": "Das Passwort braucht Groß- und Kleinbuchstaben und mindestens eine Zahl.",
+      "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+      "invalidToken": "Der Link ist ungültig oder abgelaufen.",
+      "tokenMissing": "Der Link ist unvollständig. Bitte fordere einen neuen Link an.",
+      "resetFailed": "Der Link ist ungültig oder abgelaufen, oder das Passwort entspricht nicht den Regeln.",
+      "emailTaken": "Diese E-Mail-Adresse ist bereits vergeben.",
+      "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    }
   },
   "home": {
     "title": "Willkommen",
     "description": "Vue-Frontend und Express-Backend sind bereit für das erste Feature."
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "text": "Die aufgerufene Seite existiert nicht oder wurde verschoben.",
+    "home": "Zur Startseite"
   },
   "footer": {
     "copyright": "© {year} Fullstack Template"

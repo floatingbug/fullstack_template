@@ -8,6 +8,7 @@ export default {
       path: '__names__',
       name: '__name__',
       component: () => import('../ui/views/__Name__View.vue'),
+      meta: { requiresAuth: true },
     },
   ],
 }

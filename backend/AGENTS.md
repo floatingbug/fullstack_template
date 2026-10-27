@@ -43,6 +43,10 @@ versendet. `src/utils/mailer.js` schreibt stattdessen Empfänger, Betreff und de
 Link ins Log. Signup und Resend antworten erfolgreich. In Production ist SMTP Pflicht; ein
 Versandfehler führt beim Signup zum Löschen des gerade angelegten Users und zu `502`.
 
+Die Mail-Links zeigen auf Frontend-Routen unter `/auth`:
+`${CLIENT_BASE_URL}/auth/verify-email?token=…`, `/auth/reset-password?token=…`,
+`/auth/confirm-email-change?token=…`.
+
 ## Aufbau
 
 ```
@@ -210,7 +214,7 @@ das Refresh-Cookie geht durch `credentials: 'include'` mit.
 3. `changeEmail` lehnt die aktuelle Adresse und bereits von anderen Usern genutzte Adressen ab,
    prüft den Cooldown (`emailChangeLastRequestedAt`, 5 min, nur in Production), erzeugt ein
    24-h-Token und speichert `pendingEmail` + Token-Hash + `emailChangeLastRequestedAt`.
-4. Die Bestätigungsmail geht an die **neue** Adresse und enthält `${CLIENT_BASE_URL}/confirm-email-change?token=...`.
+4. Die Bestätigungsmail geht an die **neue** Adresse und enthält `${CLIENT_BASE_URL}/auth/confirm-email-change?token=...`.
    Schlägt der Versand fehl, werden die Pending-Felder und der Cooldown zurückgesetzt.
 5. `GET /account/confirm-email?token=...` ist **ohne Login** erreichbar (der Token ist der Nachweis). Der Service hasht den Token, prüft Ablauf und setzt per Aggregation-Pipeline `email = pendingEmail`, `emailVerified = true` und entfernt die Pending-Felder.
 6. Greift inzwischen der Unique-Index auf `email`, antwortet der Endpunkt mit `409` und räumt die Pending-Felder auf.

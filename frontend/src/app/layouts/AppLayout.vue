@@ -1,5 +1,16 @@
 <script setup>
+import { useRouter } from 'vue-router'
+
 import { Sidebar, Topbar, UserMenu } from '@/shared/components'
+import { useAuthStore } from '@/features/auth/store/authStore.js'
+
+const router = useRouter()
+const authStore = useAuthStore()
+
+async function onSignOut() {
+  await authStore.signOut()
+  await router.push('/')
+}
 </script>
 
 <template>
@@ -7,7 +18,11 @@ import { Sidebar, Topbar, UserMenu } from '@/shared/components'
     <Topbar class="topbar">
       <template #end>
         <div class="topbar-end">
-          <UserMenu />
+          <UserMenu
+            :user-name="authStore.user?.name ?? ''"
+            :user-email="authStore.user?.email ?? ''"
+            @sign-out="onSignOut"
+          />
         </div>
       </template>
     </Topbar>
@@ -51,8 +66,8 @@ import { Sidebar, Topbar, UserMenu } from '@/shared/components'
   position: sticky;
   top: 0;
   display: none;
-  background-color: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
+  background-color: var(--color-bg-muted);
+  border-right: 1px solid var(--color-border);
 
   @include media.up(bp.$bp-lg) {
     display: block;

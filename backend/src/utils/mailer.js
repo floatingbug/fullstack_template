@@ -71,7 +71,7 @@ async function sendMail({ to, subject, html, url }) {
 }
 
 function sendVerificationEmail({ email, token }) {
-    const url = `${baseUrl}/verify-email?token=${token}`;
+    const url = `${baseUrl}/auth/verify-email?token=${token}`;
 
     return sendMail({
         to: email,
@@ -86,7 +86,7 @@ function sendVerificationEmail({ email, token }) {
 }
 
 function sendPasswordResetEmail({ email, token }) {
-    const url = `${baseUrl}/reset-password?token=${token}`;
+    const url = `${baseUrl}/auth/reset-password?token=${token}`;
 
     return sendMail({
         to: email,
@@ -101,7 +101,7 @@ function sendPasswordResetEmail({ email, token }) {
 }
 
 function sendEmailChangeEmail({ email, token }) {
-    const url = `${baseUrl}/confirm-email-change?token=${token}`;
+    const url = `${baseUrl}/auth/confirm-email-change?token=${token}`;
 
     return sendMail({
         to: email,

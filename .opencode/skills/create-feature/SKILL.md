@@ -61,6 +61,8 @@ eigene Components braucht. Für Dateien ohne Vorlage keine Dateien erfinden.
 4. Die API-Schicht nutzt immer `apiFetch` aus `frontend/src/shared/api/apiFetch.js`.
    Die Basis-URL kommt aus `VITE_API_URL` (siehe `frontend/.env.example`), Pfade werden ohne
    Präfix angegeben, z. B. `/recipes`. Kein zweiter Fetch-Wrapper, keine absolute URL im Code.
+   `apiFetch` hängt den Access-Token automatisch an. Öffentliche Endpunkte setzen
+   `auth: false`, damit kein Token gesendet und kein Refresh versucht wird.
 5. Rendert das Feature Listen: Fülle `__name__Items.js` mit einem Eintrag pro Listenelement,
    Schema `{ id: "<id>", labelKey: "__name__.<id>" }`, und rendere die Liste in der View
    per `v-for` mit `t(item.labelKey)`. Einzelne Texte kommen nicht in die Items, sondern
@@ -71,9 +73,13 @@ eigene Components braucht. Für Dateien ohne Vorlage keine Dateien erfinden.
    Bestehende Schlüssel nicht überschreiben.
    Beide Dateien immer gleich ergänzen, de auf Deutsch, en auf Englisch.
 7. Lege den Feature-Router an: Rendere `router.js.template` nach
-   `frontend/src/features/__name__/router/index.js`. Bei einem öffentlichen Feature
-   `PublicLayout` statt `AppLayout` importieren. Das Layout ist dort der Parent, die View
+   `frontend/src/features/__name__/router/index.js`. Das Layout ist dort der Parent, die View
    ist ein `children`-Eintrag; es gibt kein `meta.layout`.
+   - Geschütztes Feature (Standard): `AppLayout` und `meta: { requiresAuth: true }` behalten.
+   - Öffentliches Feature: `PublicLayout` statt `AppLayout` importieren und das `meta`-Objekt
+     entfernen. Nur reine Gast-Seiten (Anmelden, Registrieren, Passwort vergessen) bekommen
+     `meta: { guestOnly: true }`.
+   Der Guard in `frontend/src/app/router/guards.js` übernimmt Session und Weiterleitung.
 8. Registriere den Feature-Router in `frontend/src/app/router/index.js`: Import
    (`import __name__Routes from '@/features/__name__/router'`) und Eintrag im `routes`-Array.
    Der App-Router importiert selbst keine Layouts und definiert keine Feature-Views.
@@ -109,3 +115,5 @@ Die Schichten und Regeln stehen in `backend/AGENTS.md`. Kurzfassung:
 - Items nur für Listen, die per `v-for` gerendert werden. Einzelne Texte direkt über `t('__name__.<key>')`.
 - Items enthalten nur Ids und Label-Schlüssel, keine Texte und keine veränderlichen Werte.
 - Alle sichtbaren Texte stehen in `de.json` und `en.json`, nie fest im Code.
+- Fehler nicht als Backend-Text anzeigen: Statuscode in einen i18n-Key übersetzen und
+  im Store als `errorKey` ablegen (siehe `features/auth/services/authErrors.js`).

@@ -23,12 +23,14 @@ src/
 ├── app/          Zusammenbau der Anwendung
 │   ├── i18n/     vue-i18n-Instanz
 │   ├── layouts/  AppLayout, AuthLayout, PublicLayout (+ layouts/components)
-│   └── router/   importiert nur die Feature-Router
+│   ├── router/   importiert die Feature-Router und installiert den Auth-Guard
+│   └── pinia.js  Singleton-Pinia für App und Guard
 ├── features/     Fachbereiche, siehe src/features/AGENTS.md
 ├── locales/      de.json, en.json
 └── shared/       Wiederverwendbares
-    ├── api/      apiFetch
-    ├── components/  Button, Footer, Logo, Sidebar, Topbar, UserMenu
+    ├── api/      apiFetch, authSession, baseUrl
+    ├── components/  Button, Footer, Input, Logo, Sidebar, Topbar, UserMenu
+    ├── router/   safeRedirect
     └── styles/   _variables, _breakpoints, _media, global.scss
 ```
 
@@ -69,7 +71,15 @@ export default {
 ```
 
 - `src/app/router/index.js` importiert nur noch die Feature-Router und sammelt sie im
-  `routes`-Array. Dort stehen weder Layouts noch Views.
+  `routes`-Array. Dort stehen weder Layouts noch Views. Zusätzlich registriert die Datei
+  den Auth-Guard (`installAuthGuard(router)`).
+- Geschützte Seiten setzen `meta: { requiresAuth: true }`, reine Gast-Seiten
+  (Anmelden, Registrieren, Passwort vergessen) `meta: { guestOnly: true }`. Der Guard in
+  `app/router/guards.js` leitet Gäste mit `redirect`-Query zur Anmeldung und angemeldete
+  User von Gast-Seiten weg. Das `redirect`-Ziel wird mit `safeRedirect` geprüft.
+- `main.js` nutzt die Singleton-Pinia aus `app/pinia.js`, damit Guard und Komponenten
+  denselben Auth-Store sehen. In Tests dieselbe Instanz verwenden und vor jedem Test
+  `useAuthStore(pinia).$reset()` aufrufen.
 - URLs sind flach: `/<plural>` (z. B. `/recipes`), Auth-Routen unter `/auth/...`.
 - Layout-Zuordnung im Feature-Router: öffentliche Seiten → `PublicLayout`, `/auth/...` →
   `AuthLayout`, angemeldete Bereiche → `AppLayout`. Layouts werden statisch importiert,
@@ -93,9 +103,28 @@ export default {
 - Alle Aufrufe über `apiFetch` aus `src/shared/api/apiFetch.js`.
 - Basis-URL aus `VITE_API_URL` (siehe `.env.example`), Pfade ohne Präfix: `apiFetch('/users/me')`.
 - `credentials: 'include'` ist gesetzt (Refresh-Cookie).
-- Geschützte Endpunkte: `Authorization: Bearer <accessToken>` im `headers`-Objekt übergeben.
-- Fehler werfen einen `Error` mit `status` und `data`; Store-Actions fangen sie und legen sie in `error` ab.
+- `apiFetch` hängt den Access-Token automatisch an (`shared/api/authSession.js`, nur im RAM)
+  und erneuert ihn bei `401` einmal über das Refresh-Cookie. Parallele Refreshes werden
+  geteilt. Öffentliche Endpunkte setzen `auth: false`, Login und Refresh zusätzlich
+  `retryOnUnauthorized: false`.
+- Fehler werfen einen `Error` mit `status` und `data`; Store-Actions fangen sie und legen
+  einen i18n-Key in `errorKey` ab.
 - Antworten sind camelCase-JSON ohne Envelope, `_id` kommt als `id`.
+
+## Auth und Session
+
+- Der Access-Token liegt ausschließlich im Speicher (`shared/api/authSession.js`), nie in
+  `localStorage` oder `sessionStorage`. Nach einem Reload wird er über das HttpOnly-Cookie
+  erneut angefordert.
+- `features/auth/store/authStore.js` hält `status` (`unknown | guest | authenticated`),
+  `user`, Formularzustände und Fehler-Keys. `restoreSession()` läuft einmal pro Seitenaufruf
+  und wird vom Guard ausgelöst.
+- Die Anmeldung setzt Token und User; die Registrierung meldet **nicht** automatisch an,
+  weil zuerst die E-Mail bestätigt werden muss.
+- Backend-Meldungen werden nie direkt angezeigt. `services/authErrors.js` übersetzt
+  Statuscodes in i18n-Keys, die Views rendern `t(store.errorKey)`.
+- Mail-Links zeigen auf `/auth/verify-email`, `/auth/reset-password` und
+  `/auth/confirm-email-change` (jeweils mit `?token=`).
 
 ## Styling
 
@@ -113,12 +142,12 @@ export default {
 - App-weite Tests liegen in `src/__tests__/`.
 - Beim Mounten die echten Plugins verwenden: `createPinia()`, `router` aus `app/router`,
   `i18n` aus `app/i18n`. i18n nicht mocken.
+- Auth-Tests: `apiFetch` mit gestubtem `fetch` testen, `authSession` und `authService` per
+  `vi.mock` ersetzen. Der Auth-Store wird vor jedem Test zurückgesetzt; der Guard nutzt die
+  Singleton-Pinia aus `app/pinia.js`.
 
 ## Offene Punkte
 
-- Kein Auth-Flow: Es gibt weder Login-/Logout-Views noch Token-Handling oder Route-Guards.
-  Die Zuordnung zum `AppLayout` ist nur Darstellung, sie schützt keine Route.
-- `/auth/sign-in` und `/auth/sign-up` rendern `AuthPlaceholderView` als Platzhalter.
 - Kein ESLint und kein Typecheck; Qualitätssicherung über Prettier, Tests und Build.
 
 ## Benennung

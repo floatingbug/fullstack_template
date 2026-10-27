@@ -52,7 +52,13 @@ Frontend (im Ordner `frontend/`):
 - Alle Aufrufe laufen über `apiFetch` aus `frontend/src/shared/api/apiFetch.js`
 - Pfade ohne Präfix, direkt die Backend-Routen: `/users/me`, `/recipes`, `/auth/sign-in`
 - `credentials: 'include'` ist gesetzt, damit das Refresh-Cookie mitgeht
-- Geschützte Endpunkte: `Authorization: Bearer <accessToken>`
+- Der Access-Token liegt nur im RAM (`shared/api/authSession.js`). `apiFetch` hängt ihn
+  automatisch an und erneuert ihn bei `401` einmal über das HttpOnly-Refresh-Cookie.
+  Öffentliche Endpunkte setzen `auth: false`, Login und Refresh zusätzlich
+  `retryOnUnauthorized: false`
+- Frontend-Routen schützen sich über `meta.requiresAuth`; `meta.guestOnly` gilt nur für
+  Gäste. Der Guard (`app/router/guards.js`) stellt die Session beim ersten Navigation
+  wieder her
 - JSON in camelCase, `_id` wird als `id` ausgegeben, kein Envelope
 - Fehler: `{ message }` mit passendem HTTP-Status, unbekannte Routen `404` als JSON
 - Eingaben: Name 3–50 Zeichen (`^[a-zA-Z0-9._-]+$`), Passwort 8–128 mit Groß-, Kleinbuchstabe
@@ -67,9 +73,9 @@ Frontend (im Ordner `frontend/`):
 2. Backend (falls Daten gespeichert werden): Modul unter `backend/src/modules/<feature>/`
    anlegen, Router in `backend/main.js` mounten. Details: `backend/AGENTS.md`.
 3. Frontend: den Skill `create-feature` verwenden (siehe unten). Jedes Feature bekommt
-   `frontend/src/features/<name>/router/index.js` (Layout als Parent, Views als `children`);
-   der Feature-Router wird in `frontend/src/app/router/index.js` importiert und in `routes`
-   aufgenommen.
+   `frontend/src/features/<name>/router/index.js` (Layout als Parent, Views als `children`,
+   geschützte Seiten mit `meta: { requiresAuth: true }`); der Feature-Router wird in
+   `frontend/src/app/router/index.js` importiert und in `routes` aufgenommen.
 4. Prüfen: Backend `npm test` und `node --check`, Frontend `npm test` und `npm run build`.
 5. Doku/Übersetzungen: neue Texte in `de.json` **und** `en.json`.
 

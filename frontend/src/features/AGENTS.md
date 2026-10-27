@@ -74,6 +74,11 @@ gefangen und in `error` abgelegt, nicht in der View.
   `import recipeRoutes from '@/features/recipe/router'` → `const routes = [..., recipeRoutes]`.
 - Kein `meta.layout`: Das Layout ergibt sich aus der Eltern-Route.
 - Geschützte Seiten → `AppLayout`, öffentliche Seiten → `PublicLayout`, Auth → `AuthLayout`.
+- Geschützte Seiten setzen `meta: { requiresAuth: true }`, reine Gast-Seiten
+  (Anmelden, Registrieren, Passwort vergessen) `meta: { guestOnly: true }`. Der Guard
+  (`app/router/guards.js`) leitet entsprechend um; die View selbst prüft keine Session.
+- `apiFetch` authentifiziert automatisch. Die View oder der Store übergibt keinen Token;
+  öffentliche Endpunkte setzen in der API-Schicht `auth: false`.
 - `children`-Pfade relativ ohne führenden Slash. Mehrere Features dürfen `path: '/'` als
   Parent haben, solange die vollen Pfade und Route-Namen eindeutig sind.
 
@@ -97,4 +102,8 @@ gefangen und in `error` abgelegt, nicht in der View.
 - Service-Tests: `<name>Service.test.js`, API-Aufrufe mit `vi.mock` ersetzen.
 - Item-Tests: `<name>Items.test.js`, prüfen Ids, `labelKey`-Schema und dass jeder
   Schlüssel in `de.json` und `en.json` existiert.
-- Tests liegen neben dem Code; `npm test` muss grün sein.
+- Feature-Tests liegen neben dem Code (`<name>Service.test.js`, `<name>Items.test.js`).
+  View-Tests dürfen daneben liegen (`<Name>View.test.js`); Services und Stores werden dabei
+  per `vi.mock` ersetzt.
+- Auth-Fehler sind Keys, keine Backend-Texte: `features/auth` nutzt `errorKey` und rendert
+  `t(store.errorKey)`.
