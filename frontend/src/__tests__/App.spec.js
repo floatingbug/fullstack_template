@@ -7,6 +7,7 @@ import i18n from '../app/i18n'
 import { pinia } from '../app/pinia'
 import { useAuthStore } from '../features/auth/store/authStore.js'
 import { refreshAccessToken } from '../shared/api/authSession.js'
+import { setTheme } from '../shared/theme/theme.js'
 
 vi.mock('../shared/api/authSession.js', () => ({
   getAccessToken: vi.fn(() => null),
@@ -33,6 +34,8 @@ describe('App', () => {
 
     refreshAccessToken.mockReset()
     refreshAccessToken.mockResolvedValue(null)
+
+    setTheme('system')
   })
 
   it('rendert das PublicLayout mit Startseite', async () => {
@@ -69,6 +72,22 @@ describe('App', () => {
 
     expect(router.currentRoute.value.name).toBe('not-found')
     expect(wrapper.text()).toContain(i18n.global.t('notFound.title'))
+
+    wrapper.unmount()
+  })
+
+  it('schaltet das Farbschema in der Topbar', async () => {
+    const wrapper = await mountAt('/')
+
+    const darkButton = wrapper.find('[data-theme-value="dark"]')
+
+    expect(darkButton.exists()).toBe(true)
+
+    await darkButton.trigger('click')
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(window.localStorage.getItem('theme')).toBe('dark')
+    expect(darkButton.attributes('aria-pressed')).toBe('true')
 
     wrapper.unmount()
   })

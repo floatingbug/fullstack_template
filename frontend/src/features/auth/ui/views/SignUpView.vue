@@ -117,6 +117,6 @@ async function onSubmit() {
 
 .auth-text {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 </style>

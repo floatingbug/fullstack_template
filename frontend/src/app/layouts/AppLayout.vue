@@ -35,20 +35,11 @@ async function onSignOut() {
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '@/shared/styles/breakpoints' as bp;
-@use '@/shared/styles/media' as media;
-
+<style scoped>
 .app-layout {
-  @include media.up(bp.$bp-lg) {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      'sidebar topbar'
-      'sidebar main';
-    user-select: none;
-  }
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
 }
 
 .topbar {
@@ -56,7 +47,7 @@ async function onSignOut() {
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-topbar);
 }
 
 .sidebar {
@@ -68,10 +59,6 @@ async function onSignOut() {
   display: none;
   background-color: var(--color-bg-muted);
   border-right: 1px solid var(--color-border);
-
-  @include media.up(bp.$bp-lg) {
-    display: block;
-  }
 }
 
 .main {
@@ -79,6 +66,22 @@ async function onSignOut() {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 12rem;
+  padding: var(--space-lg) var(--space-md) var(--space-2xl);
+}
+
+@media (min-width: 1024px) {
+  .app-layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'sidebar topbar'
+      'sidebar main';
+    user-select: none;
+  }
+
+  .sidebar {
+    display: block;
+  }
 }
 </style>

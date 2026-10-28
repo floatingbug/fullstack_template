@@ -18,6 +18,7 @@ const { t } = useI18n()
 
 <style scoped>
 .sidebar {
+  min-height: 0;
   padding: var(--space-md);
   background-color: var(--color-bg-muted);
   border-right: 1px solid var(--color-border);

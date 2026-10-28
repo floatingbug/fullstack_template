@@ -8,7 +8,8 @@
 ## Aufbau (Monorepo)
 
 - `backend/`: Node.js, Express 5, MongoDB (offizieller `mongodb`-Treiber, kein ODM), JWT, Pino
-- `frontend/`: Vue 3, Vite, Pinia, vue-router, vue-i18n, Vitest, SCSS — **kein UI-Framework**
+- `frontend/`: Vue 3, Vite, Pinia, vue-router, vue-i18n, Vitest, CSS mit Custom Properties
+  (kein SCSS) — **kein UI-Framework**
   Feature-Struktur mit eigenem Router je Feature (`features/<name>/router/index.js`)
 
 ## Regeln für Bereiche
@@ -98,5 +99,7 @@ Frontend (im Ordner `frontend/`):
 
 - Backend: `npm test` grün, `node --check` für jede geänderte Datei, betroffene Endpunkte manuell geprüft
 - Frontend: `npm test` und `npm run build` grün
+- UI in Light- und Dark-Mode geprüft; neue Styles nutzen die Tokens aus
+  `frontend/src/shared/styles` (kein SCSS, keine Hex-Werte in Komponenten)
 - Neue sichtbare Texte in beiden Locale-Dateien vorhanden
 - Keine Platzhalter (`__Name__`, `TODO` aus Vorlagen) im Ergebnis

@@ -21,17 +21,20 @@ const router = useRouter()
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-md);
-  padding: var(--space-xl) var(--space-md);
+  min-height: 60vh;
+  padding: var(--space-2xl) var(--space-md);
   text-align: center;
 }
 
 .not-found h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: var(--font-size-2xl);
 }
 
 .not-found p {
+  max-width: 46ch;
   margin: 0;
   color: var(--color-text-muted);
 }

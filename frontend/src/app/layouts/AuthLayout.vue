@@ -1,16 +1,17 @@
 <script setup>
 import { useRouter } from 'vue-router'
 
-import { Logo } from '@/shared/components'
+import { Logo, ThemeToggle } from '@/shared/components'
 
 const router = useRouter()
 </script>
 
 <template>
   <div class="auth-layout">
-    <div class="logo-container">
+    <header class="auth-header">
       <Logo @logo:press="router.push('/')" />
-    </div>
+      <ThemeToggle />
+    </header>
 
     <div class="auth-container">
       <RouterView />
@@ -25,16 +26,21 @@ const router = useRouter()
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-.logo-container {
-  margin-bottom: var(--space-lg);
+.auth-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md);
 }
 
 .auth-container {
   width: 100%;
-  max-width: 420px;
+  max-width: var(--auth-card-width);
   padding: var(--space-lg);
+  margin-block: auto;
 }
 </style>

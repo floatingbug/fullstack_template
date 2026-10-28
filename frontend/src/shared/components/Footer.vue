@@ -16,13 +16,14 @@ const year = computed(() => new Date().getFullYear())
 <style scoped>
 .footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-md);
-  height: var(--footer-height);
-  padding: 0 var(--space-md);
+  gap: var(--space-sm) var(--space-md);
+  min-height: var(--footer-height);
+  padding: var(--space-sm) var(--space-md);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 </style>

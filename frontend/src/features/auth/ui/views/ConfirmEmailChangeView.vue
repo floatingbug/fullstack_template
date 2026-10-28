@@ -58,7 +58,7 @@ onMounted(async () => {
 <style scoped>
 .auth-text {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 </style>

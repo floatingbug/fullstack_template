@@ -58,10 +58,7 @@ async function onAuthButtonActions({ action }) {
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '@/shared/styles/media' as media;
-@use '@/shared/styles/breakpoints' as bp;
-
+<style scoped>
 .topbar-container {
   min-height: 100%;
   display: grid;
@@ -70,20 +67,17 @@ async function onAuthButtonActions({ action }) {
 }
 
 header {
-  height: var(--topbar-height);
+  min-height: var(--topbar-height);
 }
 
 footer {
-  height: var(--footer-height);
+  min-height: var(--footer-height);
 }
 
 .nav-primary {
   display: flex;
   align-items: center;
-
-  @include media.up(bp.$bp-md) {
-    flex-direction: row-reverse;
-    gap: var(--space-md);
-  }
+  min-width: 0;
+  gap: var(--space-md);
 }
 </style>

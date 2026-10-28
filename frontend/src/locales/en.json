@@ -11,6 +11,12 @@
     "menu": "User menu",
     "signOut": "Sign out"
   },
+  "theme": {
+    "label": "Color scheme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "auth": {
     "signIn": "Sign in",
     "signUp": "Sign up",

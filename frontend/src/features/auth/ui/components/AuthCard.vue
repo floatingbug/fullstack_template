@@ -26,6 +26,12 @@ defineProps({
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  width: 100%;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .auth-card__header {
@@ -36,29 +42,39 @@ defineProps({
 
 .auth-card__header h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
 }
 
 .auth-card__description {
   margin: 0;
   color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
 .alert {
   margin: 0;
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
 }
 
 .alert--error {
   border-color: var(--color-danger);
   color: var(--color-danger);
+  background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
 }
 
 .alert--notice {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--space-md);
+  }
 }
 </style>

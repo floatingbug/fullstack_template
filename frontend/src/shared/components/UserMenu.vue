@@ -49,33 +49,41 @@ function onSignOut() {
   align-items: center;
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.user-menu-button:hover {
+  background-color: var(--color-bg-muted);
+  border-color: var(--color-border-strong);
 }
 
 .user-menu-label {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .user-menu-dropdown {
   position: absolute;
   right: 0;
   top: calc(100% + var(--space-xs));
+  z-index: var(--z-dropdown);
   min-width: 12rem;
   padding: var(--space-sm);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
   box-shadow: var(--shadow-md);
-  z-index: 20;
 }
 
 .user-menu-email {
   margin: 0 0 var(--space-sm);
   padding: 0 var(--space-sm);
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   overflow-wrap: anywhere;
 }
@@ -89,9 +97,10 @@ function onSignOut() {
   color: var(--color-danger);
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
 }
 
 .user-menu-signout:hover {
-  background-color: var(--color-bg-muted);
+  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
 }
 </style>

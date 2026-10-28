@@ -115,7 +115,7 @@ async function onResend() {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .auth-links p {

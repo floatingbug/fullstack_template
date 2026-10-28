@@ -15,10 +15,16 @@ const { t } = useI18n()
 .logo {
   padding: 0;
   border: 0;
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
   color: var(--color-text);
   background: transparent;
   cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.logo:hover {
+  color: var(--color-primary);
 }
 </style>

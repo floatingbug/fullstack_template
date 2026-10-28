@@ -11,6 +11,12 @@
     "menu": "Benutzermenü",
     "signOut": "Abmelden"
   },
+  "theme": {
+    "label": "Farbschema",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
   "auth": {
     "signIn": "Anmelden",
     "signUp": "Registrieren",

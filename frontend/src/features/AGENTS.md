@@ -82,6 +82,17 @@ gefangen und in `error` abgelegt, nicht in der View.
 - `children`-Pfade relativ ohne führenden Slash. Mehrere Features dürfen `path: '/'` als
   Parent haben, solange die vollen Pfade und Route-Namen eindeutig sind.
 
+## Styling
+
+- Reines CSS, kein SCSS. In Views und Feature-Komponenten `<style scoped>` ohne `lang`.
+- Ausschließlich die semantischen Tokens aus `shared/styles/theme.css` verwenden
+  (`--color-*`, `--space-*`, `--radius-*`, `--shadow-*`, `--font-*`). Keine Hex- oder
+  RGB-Werte und keine Magic Numbers für Abstände.
+- Dark Mode entsteht über die Tokens. Kein eigenes `@media (prefers-color-scheme)` in
+  Feature-Komponenten.
+- Neue Farben zuerst als semantischen Token in `shared/styles/theme.css` ergänzen.
+- Details und Anpassung für neue Projekte: `frontend/src/shared/styles/README.md`.
+
 ## Texte und Übersetzungen
 
 - Alle sichtbaren Texte stehen in `src/locales/de.json` und `src/locales/en.json`, nie fest im Code.

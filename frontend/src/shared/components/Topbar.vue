@@ -1,4 +1,6 @@
 <script setup>
+import ThemeToggle from './ThemeToggle.vue'
+
 defineProps({
   label: { type: String, default: '' },
 })
@@ -15,6 +17,7 @@ defineProps({
     </div>
 
     <div class="topbar-end">
+      <ThemeToggle />
       <slot name="end" />
     </div>
   </header>
@@ -25,23 +28,26 @@ defineProps({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-md);
-  height: var(--topbar-height);
-  padding: 0 var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  min-height: var(--topbar-height);
+  padding: var(--space-sm) var(--space-md);
   border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-bg);
+  background-color: var(--color-surface);
 }
 
 .topbar-start,
+.topbar-default,
 .topbar-end {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  min-width: 0;
 }
 
-.topbar-default {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
+.topbar-end {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-sm) var(--space-md);
 }
 </style>

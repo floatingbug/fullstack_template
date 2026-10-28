@@ -1,7 +1,8 @@
 # Frontend
 
-Vue 3 mit Vite, Pinia, vue-router, vue-i18n und Vitest. Styles mit SCSS.
-**Kein UI-Framework**, **kein TypeScript** (JavaScript, `jsconfig.json` nur für den `@`-Alias).
+Vue 3 mit Vite, Pinia, vue-router, vue-i18n und Vitest. Styles mit reinem CSS
+(Custom Properties, kein SCSS). **Kein UI-Framework**, **kein TypeScript** (JavaScript,
+`jsconfig.json` nur für den `@`-Alias).
 
 ## Befehle
 
@@ -29,9 +30,10 @@ src/
 ├── locales/      de.json, en.json
 └── shared/       Wiederverwendbares
     ├── api/      apiFetch, authSession, baseUrl
-    ├── components/  Button, Footer, Input, Logo, Sidebar, Topbar, UserMenu
+    ├── components/  Button, Footer, Input, Logo, Sidebar, ThemeToggle, Topbar, UserMenu
     ├── router/   safeRedirect
-    └── styles/   _variables, _breakpoints, _media, global.scss
+    ├── theme/    theme.js (Light/Dark/System)
+    └── styles/   tokens.css, theme.css, base.css, index.css, README.md
 ```
 
 ### app/
@@ -84,6 +86,8 @@ export default {
 - Layout-Zuordnung im Feature-Router: öffentliche Seiten → `PublicLayout`, `/auth/...` →
   `AuthLayout`, angemeldete Bereiche → `AppLayout`. Layouts werden statisch importiert,
   Views lazy (`() => import(...)`).
+- `Topbar` enthält den ThemeToggle. `AuthLayout` hat einen eigenen Header mit Logo und
+  ThemeToggle, weil dort keine Topbar verwendet wird.
 - Mehrere Feature-Router dürfen `path: '/'` als Parent haben, solange die vollen Pfade
   eindeutig bleiben. Route-Namen müssen eindeutig sein (Feature-Singular).
 - Ein 404-Catch-all gehört auf die oberste Ebene, nicht in einen Layout-Block.
@@ -95,7 +99,7 @@ export default {
 - In `<script setup>`: `const { t } = useI18n()`, im Template `{{ t('home.title') }}`.
 - Generische Primitives (`Button`) bekommen den fertigen Text als Prop:
   `:label="t('auth.signIn')"`.
-- App-Chrome (`Logo`, `Footer`, `UserMenu`, `Sidebar`) übersetzt seine Texte selbst.
+- App-Chrome (`Logo`, `Footer`, `UserMenu`, `Sidebar`, `ThemeToggle`) übersetzt seine Texte selbst.
 - Listen werden über Items gerendert (`v-for` + `t(item.labelKey)`), siehe `src/features/AGENTS.md`.
 
 ## API
@@ -128,12 +132,25 @@ export default {
 
 ## Styling
 
-- `<style scoped>` in den Komponenten, `<style scoped lang="scss">` nur bei Bedarf.
-- Design-Tokens als CSS-Variablen aus `shared/styles/global.scss`
-  (`--space-md`, `--color-text`, `--topbar-height`, …). Keine hartcodierten Farben oder Abstände.
-- Breakpoints: `@use "@/shared/styles/breakpoints" as bp;` und
-  `@use "@/shared/styles/media" as media;` → `@include media.up(bp.$bp-lg) { … }`.
-- `global.scss` wird in `main.js` importiert und darf nicht in Komponenten importiert werden.
+- Reines CSS, kein SCSS/Sass. Komponenten nutzen `<style scoped>` ohne `lang="scss"`.
+- `shared/styles/index.css` importiert Schrift, `tokens.css`, `theme.css` und `base.css`.
+  Die Datei wird in `main.js` importiert und nie in Komponenten.
+- `tokens.css` enthält Rohpalette, Typografie, Abstände, Radien, Schatten, Layoutgrößen und
+  Bewegung. `theme.css` bildet sie auf semantische Tokens ab (`--color-bg`, `--color-text`,
+  `--color-primary`, …) und steuert Light/Dark/System über `light-dark()` und `color-scheme`.
+- Komponenten verwenden nur semantische Tokens (`--color-*`, `--space-*`, `--radius-*`,
+  `--shadow-*`, `--font-*`). Keine Hex-/RGB-Werte und keine Magic Numbers.
+- Dark Mode ausschließlich über die Tokens. Kein eigenes
+  `@media (prefers-color-scheme)` in Komponenten.
+- Breakpoints sind normale `@media`-Queries (480 / 768 / 1024 / 1280 px), weil
+  CSS-Variablen in Media Queries nicht funktionieren.
+- Fokusring, Selection und reduzierte Bewegung kommen global aus `base.css`.
+- Der Theme-Schalter besteht aus `shared/theme/theme.js` und `ThemeToggle.vue`. `Topbar`
+  (Public- und App-Layout) sowie `AuthLayout` binden ihn ein. Die Auswahl liegt in
+  `localStorage` (`theme`); ein Inline-Script in `index.html` verhindert das Aufblitzen
+  des falschen Themes.
+- Anpassung für neue Projekte: `shared/styles/README.md` (Marke, Typografie, Form, Dichte,
+  Layout und Design-Brief).
 
 ## Tests
 
@@ -145,6 +162,8 @@ export default {
 - Auth-Tests: `apiFetch` mit gestubtem `fetch` testen, `authSession` und `authService` per
   `vi.mock` ersetzen. Der Auth-Store wird vor jedem Test zurückgesetzt; der Guard nutzt die
   Singleton-Pinia aus `app/pinia.js`.
+- Theme-Tests: `shared/theme/theme.test.js` und `ThemeToggle.test.js`. Vor jedem Test
+  `setTheme('system')` aufrufen und `localStorage` leeren.
 
 ## Offene Punkte
 
