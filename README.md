@@ -3,7 +3,7 @@
 A minimal fullstack starter: Vue 3 frontend, Express 5 API, MongoDB, JWT authentication,
 and a plain-CSS design system with light/dark/system themes.
 
-- **Frontend:** Vue 3, Vite, Pinia, vue-router, vue-i18n, Vitest — no UI framework, no TypeScript
+- **Frontend:** Vue 3, Vite, Pinia, vue-router, vue-i18n, Vitest, TypeScript — no UI framework
 - **Backend:** Node.js, Express 5, official `mongodb` driver (no ODM), JWT, Pino
 - **Styling:** plain CSS with custom properties (no SCSS), tokens in `frontend/src/shared/styles`
 - **Auth:** access token in memory, refresh token in an HttpOnly cookie, email verification,
@@ -119,7 +119,7 @@ Work through this checklist after cloning the template:
 6. **CORS** — set the production origins in `backend/src/config/corsConfig.js`.
 7. **Email** — configure `SMTP_*`, `MAIL_FROM` and `CLIENT_BASE_URL` for production.
 8. **Features** — remove features you do not need under `frontend/src/features/` and their
-   entries in `frontend/src/app/router/index.js`; backend modules are mounted in `backend/main.js`.
+   entries in `frontend/src/app/router/index.ts`; backend modules are mounted in `backend/main.ts`.
 9. **Docs** — replace the placeholders in `AGENTS.md` when you rename the project.
 
 ## Commands
@@ -128,10 +128,11 @@ Work through this checklist after cloning the template:
 
 ```bash
 npm install
-npm run dev          # nodemon
-node main.js         # without watch
+npm run dev          # tsx watch main.ts
+npm run type-check   # tsc --noEmit
+npm run build        # compile to dist/
+npm start            # run dist/main.js
 npm test             # node:test against a temporary MongoDB database
-node --check <file>  # syntax check
 ```
 
 `npm test` starts the server as a child process on a free port, uses a temporary database
@@ -143,9 +144,10 @@ required; override the connection with `TEST_MONGO_URI`.
 ```bash
 npm install
 npm run dev        # dev server on port 5173
+npm run type-check # vue-tsc --noEmit
 npm test           # tests once
 npm run test:unit  # tests in watch mode
-npm run build      # production build
+npm run build      # type-check + production build
 npm run format     # Prettier
 ```
 

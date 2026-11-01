@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { THEMES, setTheme, theme } from '@/shared/theme/theme.js'
+import { THEMES, setTheme, theme } from '@/shared/theme/theme'
 
 const { t } = useI18n()
 </script>

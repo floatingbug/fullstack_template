@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -9,8 +9,8 @@ import AuthCard from '../components/AuthCard.vue'
 import {
   getPasswordConfirmationErrorKey,
   getPasswordErrorKey,
-} from '../../services/authValidation.js'
-import { useAuthStore } from '../../store/authStore.js'
+} from '../../services/authValidation'
+import { useAuthStore } from '../../store/authStore'
 
 const { t } = useI18n()
 const route = useRoute()

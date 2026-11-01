@@ -1,0 +1,76 @@
+import { ref } from 'vue'
+
+export const THEMES = ['light', 'dark', 'system'] as const
+export type Theme = (typeof THEMES)[number]
+
+export const DEFAULT_THEME: Theme = 'system'
+
+const STORAGE_KEY = 'theme'
+
+function isTheme(value: unknown): value is Theme {
+  return typeof value === 'string' && (THEMES as readonly string[]).includes(value)
+}
+
+function readStoredTheme(): Theme {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    return isTheme(stored) ? stored : DEFAULT_THEME
+  } catch {
+    return DEFAULT_THEME
+  }
+}
+
+function readInitialTheme(): Theme {
+  const fromDocument = document.documentElement.dataset.theme
+  return isTheme(fromDocument) ? fromDocument : readStoredTheme()
+}
+
+/**
+ * Aktueller Modus. Der Inline-Script in index.html setzt data-theme bereits
+ * vor dem ersten Paint; hier wird der Wert nur noch reaktiv abgebildet.
+ */
+export const theme = ref<Theme>(readInitialTheme())
+
+function applyTheme(value: Theme): void {
+  document.documentElement.dataset.theme = value
+}
+
+function persistTheme(value: Theme): void {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    // Ohne Storage funktioniert der Modus weiterhin für die aktuelle Sitzung.
+  }
+}
+
+export function setTheme(value: unknown): void {
+  if (!isTheme(value)) {
+    return
+  }
+
+  theme.value = value
+  applyTheme(value)
+  persistTheme(value)
+}
+
+function onStorage(event: StorageEvent): void {
+  if (event.key !== STORAGE_KEY) {
+    return
+  }
+
+  const nextTheme = isTheme(event.newValue) ? event.newValue : DEFAULT_THEME
+
+  theme.value = nextTheme
+  applyTheme(nextTheme)
+}
+
+/**
+ * Wendet den gespeicherten Modus an und hält ihn zwischen Tabs synchron.
+ * Gibt eine Aufräumfunktion für Tests zurück.
+ */
+export function initTheme(): () => void {
+  setTheme(theme.value)
+  window.addEventListener('storage', onStorage)
+
+  return () => window.removeEventListener('storage', onStorage)
+}

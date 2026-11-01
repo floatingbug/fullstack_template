@@ -1,14 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
+import type { PropType } from 'vue'
 
 const props = defineProps({
   label: { type: String, required: true },
   severity: {
-    type: String,
+    type: String as PropType<'primary' | 'secondary' | 'danger'>,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'danger'].includes(value),
+    validator: (value: string) => ['primary', 'secondary', 'danger'].includes(value),
   },
-  type: { type: String, default: 'button' },
+  type: { type: String as PropType<'button' | 'submit' | 'reset'>, default: 'button' },
   disabled: { type: Boolean, default: false },
 })
 

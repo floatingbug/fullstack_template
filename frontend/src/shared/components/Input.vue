@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   id: { type: String, required: true },
   label: { type: String, required: true },
@@ -11,10 +11,11 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
-function onInput(event) {
-  emit('update:modelValue', event.target.value)
+function onInput(event: Event) {
+  const target = event.target as HTMLInputElement
+  emit('update:modelValue', target.value)
 }
 </script>
 

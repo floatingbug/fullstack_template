@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
 
 import { Sidebar, Topbar, UserMenu } from '@/shared/components'
-import { useAuthStore } from '@/features/auth/store/authStore.js'
+import { useAuthStore } from '@/features/auth/store/authStore'
 
 const router = useRouter()
 const authStore = useAuthStore()

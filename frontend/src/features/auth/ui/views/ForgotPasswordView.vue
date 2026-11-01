@@ -1,12 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { Button, Input } from '@/shared/components'
 
 import AuthCard from '../components/AuthCard.vue'
-import { getEmailErrorKey } from '../../services/authValidation.js'
-import { useAuthStore } from '../../store/authStore.js'
+import { getEmailErrorKey } from '../../services/authValidation'
+import { useAuthStore } from '../../store/authStore'
 
 const { t } = useI18n()
 const store = useAuthStore()

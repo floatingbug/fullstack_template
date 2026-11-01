@@ -32,9 +32,11 @@ backend/src/
 ## Befehle (im Ordner `backend/` ausführen)
 
 - `npm run dev` startet den Entwicklungsserver
+- `npm run type-check` prüft die Typen
 - `npm run test` führt die Tests aus
 
 ## Definition of Done
 
+- `npm run type-check` läuft ohne Fehler.
 - `npm run test` läuft grün.
 - Der Endpoint entspricht dem API-Vertrag (Validator meldet keine Fehler).

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
 import { Button } from '@/shared/components'
@@ -11,7 +11,7 @@ defineProps({
 const emit = defineEmits(['authButton:action'])
 const { t } = useI18n()
 
-function onAction(action) {
+function onAction(action: string) {
   emit('authButton:action', { action })
 }
 </script>

@@ -10,7 +10,7 @@ frontend/src/
   ├── locales/       Übersetzungen
   ├── shared/        feature-übergreifende Komponenten und Helfer
   ├── App.vue
-  └── main.js
+  └── main.ts
 ```
 
 ## API-Vertrag
@@ -33,6 +33,7 @@ frontend/src/
 ## Befehle (im Ordner `frontend/` ausführen)
 
 - `npm run dev` startet den Entwicklungsserver
+- `npm run type-check` prüft die Typen
 - `npm run build` erzeugt den Produktions-Build
 - `npm run test` führt alle Tests aus
 - `npm run test:unit` führt nur die Unit-Tests aus
@@ -41,5 +42,5 @@ frontend/src/
 
 ## Definition of Done
 
-- `npm run test` und `npm run build` laufen grün.
+- `npm run type-check`, `npm run test` und `npm run build` laufen grün.
 - Neue sichtbare Texte sind in `locales/` hinterlegt.

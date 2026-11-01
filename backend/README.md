@@ -17,9 +17,10 @@ Detailed conventions, the data model and all endpoints are documented in
 ```bash
 npm install
 cp .env.example .env
-npm run dev        # nodemon
+npm run dev        # tsx watch main.ts
 # or
-node main.js       # without watch
+npm run build      # compile to dist/
+npm start          # run dist/main.js
 ```
 
 The API listens on `PORT` (default `3000`).
@@ -27,10 +28,11 @@ The API listens on `PORT` (default `3000`).
 ## Commands
 
 ```bash
-npm run dev        # nodemon main.js
-node main.js       # without watch
+npm run dev        # tsx watch main.ts
+npm run type-check # tsc --noEmit
+npm run build      # compile to dist/
+npm start          # run dist/main.js
 npm test           # node:test against a temporary MongoDB database
-node --check <file>  # syntax check
 ```
 
 `npm test` starts the server as a child process on a free port, uses a temporary database
@@ -75,16 +77,17 @@ required; a failing signup mail rolls the new user back and returns `502`.
 ## Structure
 
 ```
-main.js                 bootstrap, middleware, routes, 404 and error handler
+main.ts                 bootstrap, middleware, routes, 404 and error handler
 src/
   config/               environment + security configuration
-  db/mongo.js           MongoDB connection and unique indexes
+  db/mongo.ts           MongoDB connection and unique indexes
   middlewares/          authUser, central error handler
   utils/                logger, mailer, normalize, password, cookies, catchAsync
-  modules/auth          sign-up/in/out, refresh, verify email, password reset
-  modules/user          /users endpoints
-  modules/account       account updates and email change
+  features/auth         sign-up/in/out, refresh, verify email, password reset
+  features/user         /users endpoints
+  features/account      account updates and email change
 test/                   node:test API tests
+dist/                   compiled output (npm run build)
 ```
 
 ## Security notes

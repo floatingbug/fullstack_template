@@ -30,7 +30,7 @@ frontend/src/
   ├── locales/       Übersetzungen
   ├── shared/        feature-übergreifende Komponenten und Helfer
   ├── App.vue
-  └── main.js
+  └── main.ts
 ```
 
 ## Bereichsspezifische Regeln
@@ -56,14 +56,15 @@ Reihenfolge bei neuen Features oder Endpoint-Änderungen:
 
 ## Definition of Done
 
-- Backend-Änderung: `npm run test` in `backend/` läuft grün.
-- Frontend-Änderung: `npm run test` und `npm run build` in `frontend/` laufen grün.
+- Backend-Änderung: `npm run type-check` und `npm run test` in `backend/` laufen grün.
+- Frontend-Änderung: `npm run type-check`, `npm run test` und `npm run build` in `frontend/` laufen grün.
 
 ## Befehle
 
 ### Frontend (im Ordner `frontend/`)
 
 - `npm run dev`
+- `npm run type-check`
 - `npm run build`
 - `npm run test`
 - `npm run test:unit`
@@ -73,4 +74,5 @@ Reihenfolge bei neuen Features oder Endpoint-Änderungen:
 ### Backend (im Ordner `backend/`)
 
 - `npm run dev`
+- `npm run type-check`
 - `npm run test`

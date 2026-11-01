@@ -1,19 +1,19 @@
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
 
 import { Logo, Topbar, Footer } from '@/shared/components'
-import { useAuthStore } from '@/features/auth/store/authStore.js'
+import { useAuthStore } from '@/features/auth/store/authStore'
 import { AuthButtons } from './components'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const routes = {
+const routes: Record<string, string> = {
   signIn: '/auth/sign-in',
   signUp: '/auth/sign-up',
 }
 
-async function onAuthButtonActions({ action }) {
+async function onAuthButtonActions({ action }: { action: string }) {
   if (action === 'signOut') {
     await authStore.signOut()
     await router.push('/')

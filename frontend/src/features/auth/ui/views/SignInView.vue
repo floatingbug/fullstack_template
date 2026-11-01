@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Button, Input } from '@/shared/components'
-import { safeRedirect } from '@/shared/router/safeRedirect.js'
+import { safeRedirect } from '@/shared/router/safeRedirect'
 
 import AuthCard from '../components/AuthCard.vue'
-import { useAuthStore } from '../../store/authStore.js'
+import { useAuthStore } from '../../store/authStore'
 
 const { t } = useI18n()
 const route = useRoute()
