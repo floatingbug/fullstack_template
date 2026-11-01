@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:unit": "vitest",
-    "gen:api": "openapi-typescript ../contracts/openapi.yaml -o src/shared/api/schema.d.ts && node scripts/add-schema-header.mjs",
+    "gen:api": "openapi-typescript ../contracts/openapi.yaml -o src/shared/api/schema.d.ts",
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {

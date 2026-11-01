@@ -91,6 +91,16 @@ dist/                   compiled output (npm run build)
 
 ## Security notes
 
+### Nodemailer advisory (Stand 2026-11-01)
+
+`nodemailer@8.0.11` is currently flagged by `npm audit` (affected range `<=10.1.3`).
+A complete fix requires a major upgrade to `nodemailer@10.3.1`; this is pending.
+
+The mailer uses only `createTransport()` and `sendMail()` with `from`, a validated
+`to` address, a fixed `subject` and generated `html`. It does not use `raw`,
+`resolveContent()`, attachments, DKIM, custom DNS, or the
+`disableFileAccess`/`disableUrlAccess` sandbox options.
+
 - Helmet, strict CORS, secure cookies and rate limits are enabled only in production.
 - Access tokens are stateless JWTs; the refresh token only lives in an HttpOnly cookie.
 - Passwords are hashed with bcrypt.
