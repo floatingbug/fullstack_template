@@ -1,25 +1,13 @@
 /**
- * Übergangsweise handgeschriebene API-Typen.
- * Werden später durch die generierten Typen aus `gen:api` ersetzt.
+ * Alias-Schicht auf die aus `contracts/openapi.yaml` generierten Typen.
+ * Typen nicht hier definieren – `schema.d.ts` mit `npm run gen:api` neu erzeugen.
  */
+import type { components } from './schema'
 
-export interface User {
-  id: string
-  name: string
-  email: string
-}
+type Schemas = components['schemas']
 
-export interface SignInResponse {
-  accessToken: string
-  user: User
-}
-
-export interface MessageResponse {
-  message: string
-}
-
-export interface ConfirmEmailChangeResponse {
-  success: boolean
-  newEmail: string | null
-  message: string
-}
+export type User = Schemas['User']
+export type SignInResponse = Schemas['SignInResponse']
+export type MessageResponse = Schemas['Message']
+export type ConfirmEmailChangeResponse = Schemas['ConfirmEmailChangeResponse']
+export type AccountUpdateResult = Schemas['AccountUpdateResult']

@@ -3,6 +3,7 @@ import type { RequestHandler } from 'express';
 import rateLimit from 'express-rate-limit';
 import config from '../../config/index.js';
 import authUser from '../../middlewares/authUser.js';
+import { openApiMiddleware } from '../../middlewares/openapi.js';
 import validateUpdateAccount from './middlewares/validateUpdateAccount.js';
 import controller from './controller/index.js';
 
@@ -19,11 +20,13 @@ router.patch(
     accountChangeLimiter, 
     authUser, 
     validateUpdateAccount, 
+    ...openApiMiddleware,
     controller.updateAccount
 );
 
 router.get(
     "/confirm-email", 
+    ...openApiMiddleware,
     controller.confirmEmailChange
 );
 

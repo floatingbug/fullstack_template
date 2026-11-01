@@ -14,9 +14,10 @@ backend/src/
 ## API-Vertrag
 
 - Der API-Vertrag liegt in `../contracts/openapi.yaml`.
-- Requests und Responses werden mit `express-openapi-validator` als Middleware validiert.
+- Requests werden immer mit `express-openapi-validator` als Middleware validiert; Responses nur außerhalb von Produktion (Tests und Entwicklung).
 - Implementiere keine Endpoints, die nicht im API-Vertrag stehen. Ändere zuerst den Vertrag.
 - Weicht die Implementierung vom Vertrag ab, passe die Implementierung an, nicht den Validator (Validierung nie abschalten oder umgehen).
+- Jeder neue oder geänderte Endpoint braucht mindestens einen Test. `validateResponses` prüft nur Operationen, die von Tests durchlaufen werden.
 
 ## Regeln
 
@@ -40,3 +41,4 @@ backend/src/
 - `npm run type-check` läuft ohne Fehler.
 - `npm run test` läuft grün.
 - Der Endpoint entspricht dem API-Vertrag (Validator meldet keine Fehler).
+- Neue oder geänderte Endpoints haben mindestens einen Test.

@@ -51,8 +51,9 @@ Reihenfolge bei neuen Features oder Endpoint-Änderungen:
 
 - Der API-Vertrag (`contracts/openapi.yaml`) ist die einzige Wahrheit für die Schnittstelle.
 - Implementiere keine Endpoints, die nicht im API-Vertrag stehen.
-- Requests und Responses werden im Backend mit `express-openapi-validator` validiert.
-- Generierte Dateien (z. B. `frontend/src/api/schema.d.ts`) nie von Hand ändern.
+- Requests werden im Backend immer mit `express-openapi-validator` validiert; Responses nur außerhalb von Produktion (Tests und Entwicklung).
+- Generierte Dateien (z. B. `frontend/src/shared/api/schema.d.ts`) nie von Hand ändern.
+- Nach Änderungen am API-Vertrag `npm run gen:api` im Ordner `frontend/` ausführen und die generierte Datei `frontend/src/shared/api/schema.d.ts` mit committen.
 
 ## Definition of Done
 
