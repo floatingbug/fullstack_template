@@ -199,27 +199,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get a public user profile
-         * @description Public endpoint; no authentication is required. Returns exactly `id`,
-         *     `name` and `email`. `name` and `email` are personal data.
-         */
-        get: operations["getUserById"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/account": {
         parameters: {
             query?: never;
@@ -728,48 +707,6 @@ export interface operations {
             };
             401: components["responses"]["Unauthorized"];
             /** @description The account could not be deleted because it no longer exists. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            500: components["responses"]["InternalServerError"];
-        };
-    };
-    getUserById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description MongoDB ObjectId as hex string. */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Public user profile. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            /** @description User id missing or invalid. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description User not found. */
             404: {
                 headers: {
                     [name: string]: unknown;

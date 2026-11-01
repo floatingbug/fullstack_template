@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import type { TestContext } from 'node:test';
 import assert from 'node:assert/strict';
+import { ObjectId } from 'mongodb';
 import type { Collection } from 'mongodb';
 import testServerModule from './helpers/testServer.js';
 import type { TestServer } from './helpers/testServer.js';
@@ -626,6 +627,76 @@ test("Backend-API", async (t: TestContext) => {
         assert.equal(newPassword.status, 200);
 
         aliceToken = newPassword.body.accessToken;
+    });
+
+    await t.test("löscht das eigene Konto und schützt DELETE /users/me", async () => {
+        const suffix = `${process.pid}_${Date.now()}`;
+        const name = `delete_me_${suffix}`;
+        const email = `delete_me_${suffix}@example.com`;
+        const password = "Passwort1";
+
+        const mark = server.output().length;
+        const signUp = await api("/auth/sign-up", {
+            method: "POST",
+            body: { name, email, password },
+        });
+
+        assert.equal(signUp.status, 201);
+
+        const verifyMatch = await server.waitForLog(
+            mark,
+            /\/verify-email\?token=([a-f0-9]{64})/
+        );
+
+        await api(`/auth/verify-email?token=${verifyMatch[1]}`);
+
+        const login = await signIn(email, password);
+
+        assert.equal(login.status, 200);
+
+        const deleteToken = login.body.accessToken;
+
+        const withoutToken = await api("/users/me", { method: "DELETE" });
+
+        assert.equal(withoutToken.status, 401);
+
+        const invalidToken = await api("/users/me", {
+            method: "DELETE",
+            token: "kaputt",
+        });
+
+        assert.equal(invalidToken.status, 401);
+
+        const deleted = await api("/users/me", {
+            method: "DELETE",
+            token: deleteToken,
+        });
+
+        assert.equal(deleted.status, 200);
+        assert.equal(deleted.body.message, "Account has been deleted.");
+        assert.match(deleted.setCookie || "", /refreshToken=/);
+        assert.match(deleted.setCookie || "", /Expires=/);
+
+        const remaining = await users.findOne({ email });
+
+        assert.equal(remaining, null);
+
+        const repeated = await api("/users/me", {
+            method: "DELETE",
+            token: deleteToken,
+        });
+
+        assert.equal(repeated.status, 404);
+        assert.equal(repeated.body.message, "Fail to delete account.");
+    });
+
+    await t.test("entfernt den öffentlichen GET /users/:id-Endpoint", async () => {
+        const id = new ObjectId().toHexString();
+        const response = await api(`/users/${id}`);
+
+        assert.equal(response.status, 404);
+        assert.match(response.contentType, /application\/json/);
+        assert.equal(response.body.message, "Not found");
     });
 
     await t.test("meldet ab und liefert JSON-404", async () => {

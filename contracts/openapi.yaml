@@ -325,44 +325,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /users/{id}:
-    get:
-      tags: [Users]
-      operationId: getUserById
-      security: []
-      summary: Get a public user profile
-      description: |
-        Public endpoint; no authentication is required. Returns exactly `id`,
-        `name` and `email`. `name` and `email` are personal data.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: MongoDB ObjectId as hex string.
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Public user profile.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: User id missing or invalid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: User not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-
   /account:
     patch:
       tags: [Account]

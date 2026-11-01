@@ -55,7 +55,6 @@ All paths are relative to the server root (no `/api` prefix).
 | POST | `/auth/reset-password` | Set a new password with a reset token |
 | GET | `/users/me` | Current user (Bearer token) |
 | DELETE | `/users/me` | Delete the current account |
-| GET | `/users/:id` | Public user data |
 | PATCH | `/account` | Change name, email and/or password |
 | GET | `/account/confirm-email?token=…` | Confirm an email change |
 
