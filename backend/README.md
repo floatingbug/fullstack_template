@@ -107,3 +107,14 @@ The mailer uses only `createTransport()` and `sendMail()` with `from`, a validat
 - Sensitive tokens are stored as SHA-256 hashes and removed after use.
 - Existing sessions are **not** revoked on password change or reset (see open points in
   `AGENTS.md`).
+
+### Access tokens after account deletion
+
+Access tokens (default `1h`) are checked only for signature and expiry, not for the
+existence of the user. Protected routes called with the token of a deleted user
+therefore return `404` or `200` with `errorMessages`, without changing any data. The
+refresh path checks the user's existence and returns `401 Session expired`, so a
+deleted user cannot obtain new access tokens.
+
+A user-existence check in `authUser` is deferred until more state-changing routes or
+real token revocation are added.

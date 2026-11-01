@@ -489,7 +489,10 @@ test("Backend-API", async (t: TestContext) => {
         });
 
         assert.equal(weakPassword.status, 400);
-        assert.equal(weakPassword.body.error.type, "password");
+        assert.equal(
+            weakPassword.body.message,
+            "Password must be between 8 and 128 characters long"
+        );
     });
 
     await t.test("lehnt vergebene Namen ab", async () => {

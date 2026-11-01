@@ -210,9 +210,10 @@ export interface paths {
         /**
          * Update name, email or password
          * @description Changes one or more fields. Business conflicts such as a taken name or
-         *     email, an identical value, or an identical email are reported in the
-         *     `errorMessages` object with HTTP 200. Input validation failures use
-         *     HTTP 400 with `{ "error": ... }`.
+         *     email, an identical value, or an identical email are intentionally
+         *     reported in the `errorMessages` object with HTTP 200. Multiple fields
+         *     can succeed or fail independently in a single request. Input validation
+         *     failures use HTTP 400 with `{ "message": ... }`.
          */
         patch: operations["updateAccount"];
         trace?: never;
@@ -248,12 +249,6 @@ export interface components {
         Error: {
             message: string;
         };
-        AccountValidationError: {
-            error: string | {
-                type: string;
-                message: string;
-            };
-        };
         /** @description Public user data. `name` and `email` are personal data. */
         User: {
             /** @description MongoDB ObjectId serialized as a hex string. */
@@ -270,6 +265,11 @@ export interface components {
         RefreshResponse: {
             accessToken: string;
         };
+        /**
+         * @description Result of a partially successful account update. `messages` contains
+         *     successful fields, `errorMessages` contains business conflicts, and
+         *     `updated` lists the fields that were changed.
+         */
         AccountUpdateResult: {
             messages: {
                 name?: string;
@@ -732,7 +732,12 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Update processed; inspect `messages` and `errorMessages`. */
+            /**
+             * @description Update processed. Successful fields are listed in `messages` and
+             *     `updated`; business conflicts are intentionally reported in
+             *     `errorMessages` with HTTP 200. Multiple fields can succeed or fail
+             *     independently.
+             */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -741,15 +746,7 @@ export interface operations {
                     "application/json": components["schemas"]["AccountUpdateResult"];
                 };
             };
-            /** @description Invalid input; the body contains an `error` field. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountValidationError"];
-                };
-            };
+            400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];

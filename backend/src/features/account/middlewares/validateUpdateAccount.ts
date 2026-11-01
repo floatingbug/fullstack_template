@@ -16,7 +16,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
         || Array.isArray(changes)
     ) {
         return res.status(400).json({
-            error: "Invalid changes payload",
+            message: "Invalid changes payload",
         });
     }
 
@@ -26,7 +26,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     // At least one change required
     if (keys.length === 0) {
         return res.status(400).json({
-            error: "No changes provided",
+            message: "No changes provided",
         });
     }
 
@@ -34,7 +34,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     for (const key of keys) {
         if (!allowedKeys.includes(key)) {
             return res.status(400).json({
-                error: `Field '${key}' is not allowed`,
+                message: `Field '${key}' is not allowed`,
             });
         }
     }
@@ -45,7 +45,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
         if (nameError) {
             return res.status(400).json({
-                error: nameError,
+                message: nameError,
             });
         }
 
@@ -56,7 +56,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     if ("email" in changes) {
         if (typeof changes.email !== "string") {
             return res.status(400).json({
-                error: "Email must be a string",
+                message: "Email must be a string",
             });
         }
 
@@ -64,7 +64,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
         if (!validator.isEmail(normalizedEmail)) {
             return res.status(400).json({
-                error: "Invalid email address",
+                message: "Invalid email address",
             });
         }
 
@@ -75,11 +75,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
     if ("password" in changes) {
         if (typeof changes.password !== "string") {
             return res.status(400).json({
-                error:
-                {
-                    type: "password",
-                    message: "Password must be of type string.",
-                },
+                message: "Password must be of type string.",
             });
         }
 
@@ -87,11 +83,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
         if (passwordError) {
             return res.status(400).json({
-                error:
-                {
-                    type: "password",
-                    message: passwordError,
-                },
+                message: passwordError,
             });
         }
     }

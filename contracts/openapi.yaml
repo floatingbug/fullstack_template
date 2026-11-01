@@ -10,8 +10,7 @@ info:
     HTTP API for authentication, users and account management.
 
     All request and response bodies are JSON unless stated otherwise. Errors
-    normally use `{ "message": "..." }`. `PATCH /account` uses `{ "error": ... }`
-    for input validation failures.
+    use `{ "message": "..." }`.
 
     Unknown routes return `404 { "message": "Not found" }`. Unexpected errors
     return `500 { "message": "Internal server error" }`.
@@ -344,9 +343,10 @@ paths:
       summary: Update name, email or password
       description: |
         Changes one or more fields. Business conflicts such as a taken name or
-        email, an identical value, or an identical email are reported in the
-        `errorMessages` object with HTTP 200. Input validation failures use
-        HTTP 400 with `{ "error": ... }`.
+        email, an identical value, or an identical email are intentionally
+        reported in the `errorMessages` object with HTTP 200. Multiple fields
+        can succeed or fail independently in a single request. Input validation
+        failures use HTTP 400 with `{ "message": ... }`.
       security:
         - bearerAuth: []
       requestBody:
@@ -357,17 +357,17 @@ paths:
               $ref: '#/components/schemas/AccountUpdateRequest'
       responses:
         '200':
-          description: Update processed; inspect `messages` and `errorMessages`.
+          description: |
+            Update processed. Successful fields are listed in `messages` and
+            `updated`; business conflicts are intentionally reported in
+            `errorMessages` with HTTP 200. Multiple fields can succeed or fail
+            independently.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountUpdateResult'
         '400':
-          description: Invalid input; the body contains an `error` field.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountValidationError'
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '429':
@@ -482,23 +482,6 @@ components:
         message:
           type: string
 
-    AccountValidationError:
-      type: object
-      required: [error]
-      additionalProperties: false
-      properties:
-        error:
-          oneOf:
-            - type: string
-            - type: object
-              required: [type, message]
-              additionalProperties: false
-              properties:
-                type:
-                  type: string
-                message:
-                  type: string
-
     User:
       type: object
       required: [id, name, email]
@@ -538,6 +521,10 @@ components:
 
     AccountUpdateResult:
       type: object
+      description: |
+        Result of a partially successful account update. `messages` contains
+        successful fields, `errorMessages` contains business conflicts, and
+        `updated` lists the fields that were changed.
       required: [messages, errorMessages, updated]
       additionalProperties: false
       properties:
