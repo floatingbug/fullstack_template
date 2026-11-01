@@ -1,105 +1,76 @@
-# <Projectname>
-
-<Kurze Projektbeschreibung>
-
-> **Vorlage:** `<Projectname>` und `<Kurze Projektbeschreibung>` beim Start eines neuen
-> Projekts ersetzen. Alles andere beschreibt den Ist-Zustand des Templates.
+# Projectname
 
 ## Aufbau (Monorepo)
 
-- `backend/`: Node.js, Express 5, MongoDB (offizieller `mongodb`-Treiber, kein ODM), JWT, Pino
-- `frontend/`: Vue 3, Vite, Pinia, vue-router, vue-i18n, Vitest, CSS mit Custom Properties
-  (kein SCSS) — **kein UI-Framework**
-  Feature-Struktur mit eigenem Router je Feature (`features/<name>/router/index.js`)
+```
+Projectverzeichnis/
+  ├── backend/     Node.js + Express
+  ├── frontend/    Vue
+  └── contracts/   API-Vertrag (openapi.yaml)
+```
 
-## Regeln für Bereiche
+## Backend-Architektur
 
-Lies vor Änderungen in einem Bereich die zugehörige Datei:
+```
+backend/src/
+  ├── config/        Konfiguration
+  ├── db/            Datenbankzugriff
+  ├── middlewares/   Express-Middlewares
+  ├── features/      ein Ordner pro Fachbereich
+  └── utils/         allgemeine Hilfsfunktionen
+```
 
-- Backend: `backend/AGENTS.md`
-- Frontend: `frontend/AGENTS.md`
-- Frontend-Features: `frontend/src/features/AGENTS.md`
+## Frontend-Architektur
 
-## Befehle
+```
+frontend/src/
+  ├── __tests__/
+  ├── app/           App-weite Einrichtung (Router, Store, ...)
+  ├── features/      ein Ordner pro Fachbereich
+  ├── locales/       Übersetzungen
+  ├── shared/        feature-übergreifende Komponenten und Helfer
+  ├── App.vue
+  └── main.js
+```
 
-Backend (im Ordner `backend/`):
+## Bereichsspezifische Regeln
 
-- `npm install`
-- `npm run dev` — nodemon
-- `node main.js` — ohne Watch
-- `npm test` — `node:test` gegen eine temporäre MongoDB-Datenbank (startet den Server als Child-Process)
-- `node --check <datei>` — Syntaxprüfung (es gibt weiterhin **kein** Lint-Setup)
+- Bevor du Dateien in `backend/` änderst, lies `backend/AGENTS.md`.
+- Bevor du Dateien in `frontend/` änderst, lies `frontend/AGENTS.md`.
 
-Frontend (im Ordner `frontend/`):
+## Workflow
 
-- `npm install`
-- `npm run dev` — Dev-Server auf Port 5173
-- `npm test` — Tests einmalig (CI)
-- `npm run test:unit` — Tests im Watch-Modus
-- `npm run build` — Production-Build
-- `npm run format` — Prettier (es gibt **kein** ESLint und keinen Typecheck)
+Reihenfolge bei neuen Features oder Endpoint-Änderungen:
 
-## Voraussetzungen
+1. API-Vertrag in `contracts/openapi.yaml` anpassen
+2. Backend implementieren (mit Tests)
+3. `npm run gen:api` im Ordner `frontend/` ausführen
+4. Frontend implementieren (mit Tests)
 
-- Laufende MongoDB
-- `backend/.env` nach Vorlage `backend/.env.example`
-- `frontend/.env` nach Vorlage `frontend/.env.example` (wird nicht versioniert)
-- Ports: Backend `3000`, Frontend `5173`
-- SMTP ist optional: fehlt `SMTP_HOST` außerhalb von Production, werden Mail-Links nur geloggt
+## Regeln
 
-## API-Vertrag
-
-- Basis-URL im Frontend: `VITE_API_URL` (Default `http://localhost:3000`)
-- Alle Aufrufe laufen über `apiFetch` aus `frontend/src/shared/api/apiFetch.js`
-- Pfade ohne Präfix, direkt die Backend-Routen: `/users/me`, `/recipes`, `/auth/sign-in`
-- `credentials: 'include'` ist gesetzt, damit das Refresh-Cookie mitgeht
-- Der Access-Token liegt nur im RAM (`shared/api/authSession.js`). `apiFetch` hängt ihn
-  automatisch an und erneuert ihn bei `401` einmal über das HttpOnly-Refresh-Cookie.
-  Öffentliche Endpunkte setzen `auth: false`, Login und Refresh zusätzlich
-  `retryOnUnauthorized: false`
-- Frontend-Routen schützen sich über `meta.requiresAuth`; `meta.guestOnly` gilt nur für
-  Gäste. Der Guard (`app/router/guards.js`) stellt die Session beim ersten Navigation
-  wieder her
-- JSON in camelCase, `_id` wird als `id` ausgegeben, kein Envelope
-- Fehler: `{ message }` mit passendem HTTP-Status, unbekannte Routen `404` als JSON
-- Eingaben: Name 3–50 Zeichen (`^[a-zA-Z0-9._-]+$`), Passwort 8–128 mit Groß-, Kleinbuchstabe
-  und Zahl (nie trimmen), E-Mail wird immer `trim` + `lowercase` normalisiert
-- `name` und `email` sind unique; Duplikate liefern `409`
-- CORS im Backend erlaubt im Development `http://localhost:5173` mit Credentials
-
-## Neues Feature (End-to-End)
-
-1. Anforderungen klären: Name (Singular/Plural), Felder, Listen, Backend-Bedarf.
-   Bei Unklarheiten nachfragen statt raten.
-2. Backend (falls Daten gespeichert werden): Modul unter `backend/src/modules/<feature>/`
-   anlegen, Router in `backend/main.js` mounten. Details: `backend/AGENTS.md`.
-3. Frontend: den Skill `create-feature` verwenden (siehe unten). Jedes Feature bekommt
-   `frontend/src/features/<name>/router/index.js` (Layout als Parent, Views als `children`,
-   geschützte Seiten mit `meta: { requiresAuth: true }`); der Feature-Router wird in
-   `frontend/src/app/router/index.js` importiert und in `routes` aufgenommen.
-4. Prüfen: Backend `npm test` und `node --check`, Frontend `npm test` und `npm run build`.
-5. Doku/Übersetzungen: neue Texte in `de.json` **und** `en.json`.
-
-## Skills
-
-- `create-feature` (`.opencode/skills/create-feature`) — legt neue Features an.
-- `vue-best-practices` (`.opencode/skills/vue-best-practices`) — Vue-Regeln. Das Projekt nutzt
-  bewusst JavaScript, kein TypeScript; TypeScript-Empfehlungen dort ignorieren.
-- `backend/.agents/skills/nodejs-express-server` — generisches Express-Skill. Es beschreibt
-  Sequelize/PostgreSQL und passt **nicht** zu diesem Stack (MongoDB-Treiber). Nicht befolgen.
-
-## Sprache
-
-- Sichtbare UI-Texte ausschließlich über vue-i18n (`de.json` / `en.json`)
-- Bezeichner im Code englisch
-- Kommentare deutsch
-- Backend-Fehlermeldungen englisch (wie im Bestand)
+- Der API-Vertrag (`contracts/openapi.yaml`) ist die einzige Wahrheit für die Schnittstelle.
+- Implementiere keine Endpoints, die nicht im API-Vertrag stehen.
+- Requests und Responses werden im Backend mit `express-openapi-validator` validiert.
+- Generierte Dateien (z. B. `frontend/src/api/schema.d.ts`) nie von Hand ändern.
 
 ## Definition of Done
 
-- Backend: `npm test` grün, `node --check` für jede geänderte Datei, betroffene Endpunkte manuell geprüft
-- Frontend: `npm test` und `npm run build` grün
-- UI in Light- und Dark-Mode geprüft; neue Styles nutzen die Tokens aus
-  `frontend/src/shared/styles` (kein SCSS, keine Hex-Werte in Komponenten)
-- Neue sichtbare Texte in beiden Locale-Dateien vorhanden
-- Keine Platzhalter (`__Name__`, `TODO` aus Vorlagen) im Ergebnis
+- Backend-Änderung: `npm run test` in `backend/` läuft grün.
+- Frontend-Änderung: `npm run test` und `npm run build` in `frontend/` laufen grün.
+
+## Befehle
+
+### Frontend (im Ordner `frontend/`)
+
+- `npm run dev`
+- `npm run build`
+- `npm run test`
+- `npm run test:unit`
+- `npm run format`
+- `npm run gen:api` (Typen aus dem API-Vertrag generieren)
+
+### Backend (im Ordner `backend/`)
+
+- `npm run dev`
+- `npm run test`
