@@ -1,0 +1,21 @@
+type: object
+minProperties: 1
+additionalProperties: false
+description: |
+  At least one of `name`, `email` or `password` is required. Unknown
+  fields are rejected by the existing account validation middleware.
+properties:
+  name:
+    type: string
+    minLength: 3
+    maxLength: 50
+    pattern: ^[a-zA-Z0-9._-]+$
+  email:
+    type: string
+  password:
+    type: string
+    minLength: 8
+    maxLength: 128
+    description: |
+      Must contain uppercase and lowercase letters and at least one
+      number. Never trimmed.

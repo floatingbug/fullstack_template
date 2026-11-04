@@ -1,0 +1,25 @@
+get:
+  tags:
+    - Auth
+  operationId: verifyEmail
+  security: []
+  summary: Verify an email address
+  description: |
+    Verifies the email address using the token from the verification email.
+    Opening the same valid link again returns 200 if the address is already
+    verified.
+  parameters:
+    - $ref: ../components/parameters/TokenQuery.yaml
+  responses:
+    '200':
+      description: Email address verified (or already verified).
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Message.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

@@ -1,0 +1,30 @@
+get:
+  tags:
+    - Account
+  operationId: confirmEmailChange
+  security: []
+  summary: Confirm an email change
+  description: |
+    Confirms a pending email change using the token from the confirmation
+    email. The endpoint itself does not require authentication.
+  parameters:
+    - $ref: ../components/parameters/TokenQuery.yaml
+  responses:
+    '200':
+      description: Email address changed.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ConfirmEmailChangeResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '409':
+      description: The new email address is already in use by another account.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

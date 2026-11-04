@@ -15,7 +15,7 @@ frontend/src/
 
 ## API-Vertrag
 
-- Der API-Vertrag liegt in `../contracts/openapi.yaml`.
+- Der API-Vertrag liegt in `../contracts/openapi.bundled.yaml`.
 - Typen aus dem Vertrag werden mit `npm run gen:api` erzeugt (Ausgabe: `src/shared/api/schema.d.ts`).
 - `src/shared/api/types.ts` enthält nur Aliase auf die generierten Typen; keine eigenen Felddefinitionen.
 - Generierte Dateien nie von Hand ändern. Bei Änderungen am Vertrag neu generieren.

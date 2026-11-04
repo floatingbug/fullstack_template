@@ -5,11 +5,16 @@
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
-    "dev": "tsx watch main.ts",
+    "dev": "npm run bundle:api && concurrently \"npm:dev:server\" \"npm:dev:api-watch\"",
+    "dev:server": "tsx watch main.ts",
+    "dev:api-watch": "chokidar \"../contracts/api/**/*.{yaml,yml}\" -c \"npm run bundle:api\"",
     "type-check": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "test": "node --import tsx --test \"test/**/*.ts\""
+    "test": "node --import tsx --test \"test/**/*.ts\"",
+    "bundle:api": "redocly bundle ../contracts/api/openapi.yaml --dereferenced -o ../contracts/openapi.bundled.yaml",
+    "pretest": "npm run bundle:api",
+    "prebuild": "npm run bundle:api"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +44,7 @@
     "@middleware": "src/middleware"
   },
   "devDependencies": {
+    "@redocly/cli": "^2.72.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",

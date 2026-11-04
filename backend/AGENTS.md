@@ -13,7 +13,7 @@ backend/src/
 
 ## API-Vertrag
 
-- Der API-Vertrag liegt in `../contracts/openapi.yaml`.
+- Der API-Vertrag liegt in `../contracts/openapi.bundled.yaml`.
 - Requests werden immer mit `express-openapi-validator` als Middleware validiert; Responses nur außerhalb von Produktion (Tests und Entwicklung).
 - Implementiere keine Endpoints, die nicht im API-Vertrag stehen. Ändere zuerst den Vertrag.
 - Weicht die Implementierung vom Vertrag ab, passe die Implementierung an, nicht den Validator (Validierung nie abschalten oder umgehen).

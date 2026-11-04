@@ -1,0 +1,40 @@
+post:
+  tags:
+    - Auth
+  operationId: signUp
+  security: []
+  summary: Create an account
+  description: |
+    Creates a user and sends a verification email. In development without
+    SMTP configuration the verification link is written to the backend log.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/SignUpRequest.yaml
+  responses:
+    '201':
+      description: Account created; verification email requested.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Message.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '409':
+      description: Name or email address is already in use.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
+    '502':
+      description: The verification email could not be sent.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml

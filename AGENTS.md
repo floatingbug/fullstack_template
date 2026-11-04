@@ -6,7 +6,7 @@
 Projectverzeichnis/
   ├── backend/     Node.js + Express
   ├── frontend/    Vue
-  └── contracts/   API-Vertrag (openapi.yaml)
+  └── contracts/   API-Vertrag (openapi.bundled.yaml)
 ```
 
 ## Backend-Architektur
@@ -42,14 +42,14 @@ frontend/src/
 
 Reihenfolge bei neuen Features oder Endpoint-Änderungen:
 
-1. API-Vertrag in `contracts/openapi.yaml` anpassen
+1. API-Vertrag in `contracts/openapi.bundled.yaml` anpassen
 2. Backend implementieren (mit Tests)
 3. `npm run gen:api` im Ordner `frontend/` ausführen
 4. Frontend implementieren (mit Tests)
 
 ## Regeln
 
-- Der API-Vertrag (`contracts/openapi.yaml`) ist die einzige Wahrheit für die Schnittstelle.
+- Der API-Vertrag (`contracts/openapi.bundled.yaml`) ist die einzige Wahrheit für die Schnittstelle.
 - Implementiere keine Endpoints, die nicht im API-Vertrag stehen.
 - Requests werden im Backend immer mit `express-openapi-validator` validiert; Responses nur außerhalb von Produktion (Tests und Entwicklung).
 - Generierte Dateien (z. B. `frontend/src/shared/api/schema.d.ts`) nie von Hand ändern.

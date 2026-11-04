@@ -1,0 +1,23 @@
+type: object
+required:
+  - name
+  - email
+  - password
+additionalProperties: true
+properties:
+  name:
+    type: string
+    minLength: 3
+    maxLength: 50
+    pattern: ^[a-zA-Z0-9._-]+$
+    description: Trimmed display name.
+  email:
+    type: string
+    description: Email address; normalized to lowercase.
+  password:
+    type: string
+    minLength: 8
+    maxLength: 128
+    description: |
+      Must contain uppercase and lowercase letters and at least one
+      number. Never trimmed.

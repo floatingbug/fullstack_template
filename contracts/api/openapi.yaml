@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info:
+  title: Fullstack Template API
+  version: 1.0.0
+  license:
+    name: ISC
+    identifier: ISC
+  description: |
+    HTTP API for authentication, users and account management.
+
+    All request and response bodies are JSON unless stated otherwise. Errors
+    use `{ "message": "..." }`.
+
+    Unknown routes return `404 { "message": "Not found" }`. Unexpected errors
+    return `500 { "message": "Internal server error" }`.
+servers:
+  - url: http://localhost:3000
+    description: Local development backend
+tags:
+  - name: Auth
+    description: Registration, sign-in, sign-out, token refresh and email/password flows.
+  - name: Users
+    description: Current user and public user lookup.
+  - name: Account
+    description: Account updates and email-change confirmation.
+paths:
+  /auth/sign-up:
+    $ref: paths/auth_sign-up.yaml
+  /auth/sign-in:
+    $ref: paths/auth_sign-in.yaml
+  /auth/sign-out:
+    $ref: paths/auth_sign-out.yaml
+  /auth/refresh:
+    $ref: paths/auth_refresh.yaml
+  /auth/verify-email:
+    $ref: paths/auth_verify-email.yaml
+  /auth/verify-email/resend:
+    $ref: paths/auth_verify-email_resend.yaml
+  /auth/forgot-password:
+    $ref: paths/auth_forgot-password.yaml
+  /auth/reset-password:
+    $ref: paths/auth_reset-password.yaml
+  /users/me:
+    $ref: paths/users_me.yaml
+  /account:
+    $ref: paths/account.yaml
+  /account/confirm-email:
+    $ref: paths/account_confirm-email.yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token from `POST /auth/sign-in` or `POST /auth/refresh`.
+    refreshCookie:
+      type: apiKey
+      in: cookie
+      name: refreshToken
+      description: |
+        HttpOnly refresh token cookie. Path `/auth/refresh`; `SameSite=Lax` in
+        development and `SameSite=None; Secure` in production.

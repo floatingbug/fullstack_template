@@ -1,0 +1,22 @@
+post:
+  tags:
+    - Auth
+  operationId: signOut
+  summary: Sign out
+  description: |
+    Requires a valid access token and clears the refresh token cookie.
+    The response has no body.
+  security:
+    - bearerAuth: []
+  responses:
+    '204':
+      description: Signed out; refresh cookie cleared.
+      headers:
+        Set-Cookie:
+          $ref: ../components/headers/SetCookie.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

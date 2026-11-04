@@ -1,0 +1,38 @@
+patch:
+  tags:
+    - Account
+  operationId: updateAccount
+  summary: Update name, email or password
+  description: |
+    Changes one or more fields. Business conflicts such as a taken name or
+    email, an identical value, or an identical email are intentionally
+    reported in the `errorMessages` object with HTTP 200. Multiple fields
+    can succeed or fail independently in a single request. Input validation
+    failures use HTTP 400 with `{ "message": ... }`.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AccountUpdateRequest.yaml
+  responses:
+    '200':
+      description: |
+        Update processed. Successful fields are listed in `messages` and
+        `updated`; business conflicts are intentionally reported in
+        `errorMessages` with HTTP 200. Multiple fields can succeed or fail
+        independently.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/AccountUpdateResult.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

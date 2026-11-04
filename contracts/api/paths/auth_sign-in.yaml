@@ -1,0 +1,43 @@
+post:
+  tags:
+    - Auth
+  operationId: signIn
+  security: []
+  summary: Sign in
+  description: |
+    Returns an access token in the JSON body and sets the HttpOnly refresh
+    token cookie. The refresh token is never returned in the JSON body.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/SignInRequest.yaml
+  responses:
+    '200':
+      description: Signed in successfully.
+      headers:
+        Set-Cookie:
+          $ref: ../components/headers/SetCookie.yaml
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SignInResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      description: Invalid credentials.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '403':
+      description: The email address has not been verified yet.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

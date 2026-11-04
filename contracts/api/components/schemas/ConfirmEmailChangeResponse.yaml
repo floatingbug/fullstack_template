@@ -1,0 +1,17 @@
+type: object
+required:
+  - success
+  - newEmail
+  - message
+additionalProperties: false
+properties:
+  success:
+    type: boolean
+    enum:
+      - true
+  newEmail:
+    type:
+      - string
+      - 'null'
+  message:
+    type: string

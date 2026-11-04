@@ -1,0 +1,11 @@
+type: object
+required:
+  - nameOrEmail
+  - password
+additionalProperties: true
+properties:
+  nameOrEmail:
+    type: string
+    description: Email address or display name.
+  password:
+    type: string

@@ -1,0 +1,39 @@
+type: object
+description: |
+  Result of a partially successful account update. `messages` contains
+  successful fields, `errorMessages` contains business conflicts, and
+  `updated` lists the fields that were changed.
+required:
+  - messages
+  - errorMessages
+  - updated
+additionalProperties: false
+properties:
+  messages:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  errorMessages:
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  updated:
+    type: array
+    items:
+      type: string
+      enum:
+        - name
+        - email
+        - password

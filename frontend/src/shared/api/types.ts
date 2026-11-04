@@ -1,5 +1,5 @@
 /**
- * Alias-Schicht auf die aus `contracts/openapi.yaml` generierten Typen.
+ * Alias-Schicht auf die aus `contracts/openapi.bundled.yaml` generierten Typen.
  * Typen nicht hier definieren – `schema.d.ts` mit `npm run gen:api` neu erzeugen.
  */
 import type { components } from './schema'

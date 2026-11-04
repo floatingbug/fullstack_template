@@ -1,0 +1,813 @@
+openapi: 3.1.0
+info:
+  title: Fullstack Template API
+  version: 1.0.0
+  license:
+    name: ISC
+    identifier: ISC
+  description: |
+    HTTP API for authentication, users and account management.
+
+    All request and response bodies are JSON unless stated otherwise. Errors
+    use `{ "message": "..." }`.
+
+    Unknown routes return `404 { "message": "Not found" }`. Unexpected errors
+    return `500 { "message": "Internal server error" }`.
+servers:
+  - url: http://localhost:3000
+    description: Local development backend
+tags:
+  - name: Auth
+    description: Registration, sign-in, sign-out, token refresh and email/password flows.
+  - name: Users
+    description: Current user and public user lookup.
+  - name: Account
+    description: Account updates and email-change confirmation.
+paths:
+  /auth/sign-up:
+    post:
+      tags:
+        - Auth
+      operationId: signUp
+      security: []
+      summary: Create an account
+      description: |
+        Creates a user and sends a verification email. In development without
+        SMTP configuration the verification link is written to the backend log.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_14
+                - name
+                - email
+                - password
+              additionalProperties: true
+              properties: &ref_15
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: ^[a-zA-Z0-9._-]+$
+                  description: Trimmed display name.
+                email:
+                  type: string
+                  description: Email address; normalized to lowercase.
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 128
+                  description: |
+                    Must contain uppercase and lowercase letters and at least one
+                    number. Never trimmed.
+      responses:
+        '201':
+          description: Account created; verification email requested.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_6
+                  - message
+                additionalProperties: false
+                properties: &ref_7
+                  message:
+                    type: string
+        '400':
+          description: Invalid input.
+          content: &ref_2
+            application/json:
+              schema:
+                type: object
+                required: &ref_0
+                  - message
+                additionalProperties: false
+                properties: &ref_1
+                  message:
+                    type: string
+        '409':
+          description: Name or email address is already in use.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: &ref_3
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '500':
+          description: Unexpected server error.
+          content: &ref_4
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '502':
+          description: The verification email could not be sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+  /auth/sign-in:
+    post:
+      tags:
+        - Auth
+      operationId: signIn
+      security: []
+      summary: Sign in
+      description: |
+        Returns an access token in the JSON body and sets the HttpOnly refresh
+        token cookie. The refresh token is never returned in the JSON body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_16
+                - nameOrEmail
+                - password
+              additionalProperties: true
+              properties: &ref_17
+                nameOrEmail:
+                  type: string
+                  description: Email address or display name.
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Signed in successfully.
+          headers:
+            Set-Cookie:
+              description: |
+                Cookie header for the refresh token. Sign-in sets it; sign-out clears it.
+              schema: &ref_5
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_18
+                  - user
+                  - accessToken
+                additionalProperties: false
+                properties: &ref_19
+                  user:
+                    type: object
+                    required: &ref_10
+                      - id
+                      - name
+                      - email
+                    additionalProperties: false
+                    description: |
+                      Public user data. `name` and `email` are personal data.
+                    properties: &ref_11
+                      id:
+                        type: string
+                        description: MongoDB ObjectId serialized as a hex string.
+                      name:
+                        type: string
+                        minLength: 3
+                        maxLength: 50
+                      email:
+                        type: string
+                        description: Normalized email address.
+                  accessToken:
+                    type: string
+                    description: 'JWT access token for the `Authorization: Bearer` header.'
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '403':
+          description: The email address has not been verified yet.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /auth/sign-out:
+    post:
+      tags:
+        - Auth
+      operationId: signOut
+      summary: Sign out
+      description: |
+        Requires a valid access token and clears the refresh token cookie.
+        The response has no body.
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Signed out; refresh cookie cleared.
+          headers:
+            Set-Cookie:
+              description: |
+                Cookie header for the refresh token. Sign-in sets it; sign-out clears it.
+              schema: *ref_5
+        '401':
+          description: Missing or invalid access token.
+          content: &ref_12
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      operationId: refreshAccessToken
+      summary: Refresh the access token
+      description: |
+        Reads the HttpOnly `refreshToken` cookie and returns a new access token.
+        The refresh cookie is not rotated.
+      security:
+        - refreshCookie: []
+      responses:
+        '200':
+          description: New access token.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_20
+                  - accessToken
+                additionalProperties: false
+                properties: &ref_21
+                  accessToken:
+                    type: string
+        '401':
+          description: Refresh token missing, invalid or expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /auth/verify-email:
+    get:
+      tags:
+        - Auth
+      operationId: verifyEmail
+      security: []
+      summary: Verify an email address
+      description: |
+        Verifies the email address using the token from the verification email.
+        Opening the same valid link again returns 200 if the address is already
+        verified.
+      parameters:
+        - name: token
+          in: query
+          required: false
+          description: |
+            Token from the email link. Required in practice; if missing, the
+            endpoint responds with 400.
+          schema: &ref_13
+            type: string
+      responses:
+        '200':
+          description: Email address verified (or already verified).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_6
+                additionalProperties: false
+                properties: *ref_7
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /auth/verify-email/resend:
+    post:
+      tags:
+        - Auth
+      operationId: resendVerificationEmail
+      security: []
+      summary: Resend the verification email
+      description: |
+        Always responds generically so the endpoint does not reveal whether an
+        account exists. A mail delivery failure returns 502.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_8
+                - email
+              additionalProperties: true
+              properties: &ref_9
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Request accepted; a verification email was sent if applicable.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_6
+                additionalProperties: false
+                properties: *ref_7
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+        '502':
+          description: The verification email could not be sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+  /auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      operationId: forgotPassword
+      security: []
+      summary: Request a password reset
+      description: |
+        Always responds generically so the endpoint does not reveal whether an
+        account exists. Mail errors are logged and do not change the response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: *ref_8
+              additionalProperties: true
+              properties: *ref_9
+      responses:
+        '200':
+          description: Request accepted; a reset link was sent if applicable.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_6
+                additionalProperties: false
+                properties: *ref_7
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /auth/reset-password:
+    post:
+      tags:
+        - Auth
+      operationId: resetPassword
+      security: []
+      summary: Set a new password
+      description: |
+        Consumes the password reset token and replaces the password. Passwords
+        are never trimmed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_22
+                - token
+                - password
+              additionalProperties: true
+              properties: &ref_23
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 128
+                  description: |
+                    Must contain uppercase and lowercase letters and at least one
+                    number. Never trimmed.
+      responses:
+        '200':
+          description: Password reset successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_6
+                additionalProperties: false
+                properties: *ref_7
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /users/me:
+    get:
+      tags:
+        - Users
+      operationId: getCurrentUser
+      summary: Get the current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_10
+                additionalProperties: false
+                description: |
+                  Public user data. `name` and `email` are personal data.
+                properties: *ref_11
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '404':
+          description: The authenticated user no longer exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+    delete:
+      tags:
+        - Users
+      operationId: deleteCurrentUser
+      summary: Delete the current account
+      description: Deletes the account and clears the refresh token cookie.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Account deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_6
+                additionalProperties: false
+                properties: *ref_7
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '404':
+          description: The account could not be deleted because it no longer exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /account:
+    patch:
+      tags:
+        - Account
+      operationId: updateAccount
+      summary: Update name, email or password
+      description: |
+        Changes one or more fields. Business conflicts such as a taken name or
+        email, an identical value, or an identical email are intentionally
+        reported in the `errorMessages` object with HTTP 200. Multiple fields
+        can succeed or fail independently in a single request. Input validation
+        failures use HTTP 400 with `{ "message": ... }`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              additionalProperties: false
+              description: |
+                At least one of `name`, `email` or `password` is required. Unknown
+                fields are rejected by the existing account validation middleware.
+              properties: &ref_24
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: ^[a-zA-Z0-9._-]+$
+                email:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 128
+                  description: |
+                    Must contain uppercase and lowercase letters and at least one
+                    number. Never trimmed.
+      responses:
+        '200':
+          description: |
+            Update processed. Successful fields are listed in `messages` and
+            `updated`; business conflicts are intentionally reported in
+            `errorMessages` with HTTP 200. Multiple fields can succeed or fail
+            independently.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: |
+                  Result of a partially successful account update. `messages` contains
+                  successful fields, `errorMessages` contains business conflicts, and
+                  `updated` lists the fields that were changed.
+                required: &ref_25
+                  - messages
+                  - errorMessages
+                  - updated
+                additionalProperties: false
+                properties: &ref_26
+                  messages:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      password:
+                        type: string
+                  errorMessages:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      password:
+                        type: string
+                  updated:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        - name
+                        - email
+                        - password
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /account/confirm-email:
+    get:
+      tags:
+        - Account
+      operationId: confirmEmailChange
+      security: []
+      summary: Confirm an email change
+      description: |
+        Confirms a pending email change using the token from the confirmation
+        email. The endpoint itself does not require authentication.
+      parameters:
+        - name: token
+          in: query
+          required: false
+          description: |
+            Token from the email link. Required in practice; if missing, the
+            endpoint responds with 400.
+          schema: *ref_13
+      responses:
+        '200':
+          description: Email address changed.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_27
+                  - success
+                  - newEmail
+                  - message
+                additionalProperties: false
+                properties: &ref_28
+                  success:
+                    type: boolean
+                    enum:
+                      - true
+                  newEmail:
+                    type:
+                      - string
+                      - 'null'
+                  message:
+                    type: string
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '409':
+          description: The new email address is already in use by another account.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token from `POST /auth/sign-in` or `POST /auth/refresh`.
+    refreshCookie:
+      type: apiKey
+      in: cookie
+      name: refreshToken
+      description: |
+        HttpOnly refresh token cookie. Path `/auth/refresh`; `SameSite=Lax` in
+        development and `SameSite=None; Secure` in production.
+  schemas:
+    SignUpRequest:
+      type: object
+      required: *ref_14
+      additionalProperties: true
+      properties: *ref_15
+    Message:
+      type: object
+      required: *ref_6
+      additionalProperties: false
+      properties: *ref_7
+    Error:
+      type: object
+      required: *ref_0
+      additionalProperties: false
+      properties: *ref_1
+    SignInRequest:
+      type: object
+      required: *ref_16
+      additionalProperties: true
+      properties: *ref_17
+    User:
+      type: object
+      required: *ref_10
+      additionalProperties: false
+      description: |
+        Public user data. `name` and `email` are personal data.
+      properties: *ref_11
+    SignInResponse:
+      type: object
+      required: *ref_18
+      additionalProperties: false
+      properties: *ref_19
+    RefreshResponse:
+      type: object
+      required: *ref_20
+      additionalProperties: false
+      properties: *ref_21
+    EmailRequest:
+      type: object
+      required: *ref_8
+      additionalProperties: true
+      properties: *ref_9
+    ResetPasswordRequest:
+      type: object
+      required: *ref_22
+      additionalProperties: true
+      properties: *ref_23
+    AccountUpdateRequest:
+      type: object
+      minProperties: 1
+      additionalProperties: false
+      description: |
+        At least one of `name`, `email` or `password` is required. Unknown
+        fields are rejected by the existing account validation middleware.
+      properties: *ref_24
+    AccountUpdateResult:
+      type: object
+      description: |
+        Result of a partially successful account update. `messages` contains
+        successful fields, `errorMessages` contains business conflicts, and
+        `updated` lists the fields that were changed.
+      required: *ref_25
+      additionalProperties: false
+      properties: *ref_26
+    ConfirmEmailChangeResponse:
+      type: object
+      required: *ref_27
+      additionalProperties: false
+      properties: *ref_28
+  responses:
+    BadRequest:
+      description: Invalid input.
+      content: *ref_2
+    TooManyRequests:
+      description: Rate limit exceeded (only active in production).
+      content: *ref_3
+    InternalServerError:
+      description: Unexpected server error.
+      content: *ref_4
+    Unauthorized:
+      description: Missing or invalid access token.
+      content: *ref_12
+  headers:
+    SetCookie:
+      description: |
+        Cookie header for the refresh token. Sign-in sets it; sign-out clears it.
+      schema: *ref_5
+  parameters:
+    TokenQuery:
+      name: token
+      in: query
+      required: false
+      description: |
+        Token from the email link. Required in practice; if missing, the
+        endpoint responds with 400.
+      schema: *ref_13

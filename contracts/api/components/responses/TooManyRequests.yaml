@@ -1,0 +1,5 @@
+description: Rate limit exceeded (only active in production).
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Error.yaml

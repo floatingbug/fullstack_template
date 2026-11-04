@@ -1,0 +1,8 @@
+name: token
+in: query
+required: false
+description: |
+  Token from the email link. Required in practice; if missing, the
+  endpoint responds with 400.
+schema:
+  type: string

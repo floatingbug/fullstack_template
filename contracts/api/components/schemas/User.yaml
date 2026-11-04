@@ -1,0 +1,19 @@
+type: object
+required:
+  - id
+  - name
+  - email
+additionalProperties: false
+description: |
+  Public user data. `name` and `email` are personal data.
+properties:
+  id:
+    type: string
+    description: MongoDB ObjectId serialized as a hex string.
+  name:
+    type: string
+    minLength: 3
+    maxLength: 50
+  email:
+    type: string
+    description: Normalized email address.

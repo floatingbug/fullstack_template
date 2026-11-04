@@ -1,0 +1,11 @@
+type: object
+required:
+  - user
+  - accessToken
+additionalProperties: false
+properties:
+  user:
+    $ref: ./User.yaml
+  accessToken:
+    type: string
+    description: 'JWT access token for the `Authorization: Bearer` header.'

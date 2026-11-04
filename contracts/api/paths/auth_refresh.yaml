@@ -1,0 +1,27 @@
+post:
+  tags:
+    - Auth
+  operationId: refreshAccessToken
+  summary: Refresh the access token
+  description: |
+    Reads the HttpOnly `refreshToken` cookie and returns a new access token.
+    The refresh cookie is not rotated.
+  security:
+    - refreshCookie: []
+  responses:
+    '200':
+      description: New access token.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RefreshResponse.yaml
+    '401':
+      description: Refresh token missing, invalid or expired.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

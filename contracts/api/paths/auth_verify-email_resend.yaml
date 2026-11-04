@@ -1,0 +1,34 @@
+post:
+  tags:
+    - Auth
+  operationId: resendVerificationEmail
+  security: []
+  summary: Resend the verification email
+  description: |
+    Always responds generically so the endpoint does not reveal whether an
+    account exists. A mail delivery failure returns 502.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/EmailRequest.yaml
+  responses:
+    '200':
+      description: Request accepted; a verification email was sent if applicable.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Message.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
+    '502':
+      description: The verification email could not be sent.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml

@@ -1,0 +1,4 @@
+description: |
+  Cookie header for the refresh token. Sign-in sets it; sign-out clears it.
+schema:
+  type: string
