@@ -243,52 +243,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Message: {
-            message: string;
-        };
-        Error: {
-            message: string;
-        };
-        /** @description Public user data. `name` and `email` are personal data. */
-        User: {
-            /** @description MongoDB ObjectId serialized as a hex string. */
-            id: string;
-            name: string;
-            /** @description Normalized email address. */
-            email: string;
-        };
-        SignInResponse: {
-            user: components["schemas"]["User"];
-            /** @description JWT access token for the `Authorization: Bearer` header. */
-            accessToken: string;
-        };
-        RefreshResponse: {
-            accessToken: string;
-        };
-        /**
-         * @description Result of a partially successful account update. `messages` contains
-         *     successful fields, `errorMessages` contains business conflicts, and
-         *     `updated` lists the fields that were changed.
-         */
-        AccountUpdateResult: {
-            messages: {
-                name?: string;
-                email?: string;
-                password?: string;
-            };
-            errorMessages: {
-                name?: string;
-                email?: string;
-                password?: string;
-            };
-            updated: ("name" | "email" | "password")[];
-        };
-        ConfirmEmailChangeResponse: {
-            /** @enum {boolean} */
-            success: true;
-            newEmail: string | null;
-            message: string;
-        };
         SignUpRequest: {
             /** @description Trimmed display name. */
             name: string;
@@ -302,12 +256,41 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        Message: {
+            message: string;
+        };
+        Error: {
+            message: string;
+        };
         SignInRequest: {
             /** @description Email address or display name. */
             nameOrEmail: string;
             password: string;
         } & {
             [key: string]: unknown;
+        };
+        /** @description Public user data. `name` and `email` are personal data. */
+        User: {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string;
+            name: string;
+            /** @description Normalized email address. */
+            email: string;
+        };
+        SignInResponse: {
+            /** @description Public user data. `name` and `email` are personal data. */
+            user: {
+                /** @description MongoDB ObjectId serialized as a hex string. */
+                id: string;
+                name: string;
+                /** @description Normalized email address. */
+                email: string;
+            };
+            /** @description JWT access token for the `Authorization: Bearer` header. */
+            accessToken: string;
+        };
+        RefreshResponse: {
+            accessToken: string;
         };
         EmailRequest: {
             email: string;
@@ -337,6 +320,30 @@ export interface components {
              */
             password?: string;
         };
+        /**
+         * @description Result of a partially successful account update. `messages` contains
+         *     successful fields, `errorMessages` contains business conflicts, and
+         *     `updated` lists the fields that were changed.
+         */
+        AccountUpdateResult: {
+            messages: {
+                name?: string;
+                email?: string;
+                password?: string;
+            };
+            errorMessages: {
+                name?: string;
+                email?: string;
+                password?: string;
+            };
+            updated: ("name" | "email" | "password")[];
+        };
+        ConfirmEmailChangeResponse: {
+            /** @enum {boolean} */
+            success: true;
+            newEmail: string | null;
+            message: string;
+        };
     };
     responses: {
         /** @description Invalid input. */
@@ -345,16 +352,9 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Missing or invalid access token. */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
+                "application/json": {
+                    message: string;
+                };
             };
         };
         /** @description Rate limit exceeded (only active in production). */
@@ -363,7 +363,9 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": components["schemas"]["Error"];
+                "application/json": {
+                    message: string;
+                };
             };
         };
         /** @description Unexpected server error. */
@@ -372,7 +374,20 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": components["schemas"]["Error"];
+                "application/json": {
+                    message: string;
+                };
+            };
+        };
+        /** @description Missing or invalid access token. */
+        Unauthorized: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    message: string;
+                };
             };
         };
     };
@@ -401,7 +416,19 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SignUpRequest"];
+                "application/json": {
+                    /** @description Trimmed display name. */
+                    name: string;
+                    /** @description Email address; normalized to lowercase. */
+                    email: string;
+                    /**
+                     * @description Must contain uppercase and lowercase letters and at least one
+                     *     number. Never trimmed.
+                     */
+                    password: string;
+                } & {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
@@ -411,28 +438,64 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description Name or email address is already in use. */
             409: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description The verification email could not be sent. */
             502: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
         };
@@ -446,28 +509,58 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SignInRequest"];
+                "application/json": {
+                    /** @description Email address or display name. */
+                    nameOrEmail: string;
+                    password: string;
+                } & {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
             /** @description Signed in successfully. */
             200: {
                 headers: {
-                    "Set-Cookie": components["headers"]["SetCookie"];
+                    /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
+                    "Set-Cookie"?: string;
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SignInResponse"];
+                    "application/json": {
+                        /** @description Public user data. `name` and `email` are personal data. */
+                        user: {
+                            /** @description MongoDB ObjectId serialized as a hex string. */
+                            id: string;
+                            name: string;
+                            /** @description Normalized email address. */
+                            email: string;
+                        };
+                        /** @description JWT access token for the `Authorization: Bearer` header. */
+                        accessToken: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description Invalid credentials. */
             401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
             /** @description The email address has not been verified yet. */
@@ -476,11 +569,33 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     signOut: {
@@ -495,14 +610,45 @@ export interface operations {
             /** @description Signed out; refresh cookie cleared. */
             204: {
                 headers: {
-                    "Set-Cookie": components["headers"]["SetCookie"];
+                    /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
+                    "Set-Cookie"?: string;
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            401: components["responses"]["Unauthorized"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Missing or invalid access token. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     refreshAccessToken: {
@@ -520,7 +666,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RefreshResponse"];
+                    "application/json": {
+                        accessToken: string;
+                    };
                 };
             };
             /** @description Refresh token missing, invalid or expired. */
@@ -529,11 +677,33 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     verifyEmail: {
@@ -543,7 +713,7 @@ export interface operations {
                  * @description Token from the email link. Required in practice; if missing, the
                  *     endpoint responds with 400.
                  */
-                token?: components["parameters"]["TokenQuery"];
+                token?: string;
             };
             header?: never;
             path?: never;
@@ -557,12 +727,44 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     resendVerificationEmail: {
@@ -574,7 +776,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EmailRequest"];
+                "application/json": {
+                    email: string;
+                } & {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
@@ -584,19 +790,53 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description The verification email could not be sent. */
             502: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
         };
@@ -610,7 +850,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["EmailRequest"];
+                "application/json": {
+                    email: string;
+                } & {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
@@ -620,12 +864,44 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     resetPassword: {
@@ -637,7 +913,16 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ResetPasswordRequest"];
+                "application/json": {
+                    token: string;
+                    /**
+                     * @description Must contain uppercase and lowercase letters and at least one
+                     *     number. Never trimmed.
+                     */
+                    password: string;
+                } & {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
@@ -647,12 +932,44 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     getCurrentUser: {
@@ -670,21 +987,59 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["User"];
+                    "application/json": {
+                        /** @description MongoDB ObjectId serialized as a hex string. */
+                        id: string;
+                        name: string;
+                        /** @description Normalized email address. */
+                        email: string;
+                    };
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description Missing or invalid access token. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description The authenticated user no longer exists. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     deleteCurrentUser: {
@@ -702,21 +1057,55 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Message"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description Missing or invalid access token. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description The account could not be deleted because it no longer exists. */
             404: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     updateAccount: {
@@ -728,7 +1117,15 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AccountUpdateRequest"];
+                "application/json": {
+                    name?: string;
+                    email?: string;
+                    /**
+                     * @description Must contain uppercase and lowercase letters and at least one
+                     *     number. Never trimmed.
+                     */
+                    password?: string;
+                };
             };
         };
         responses: {
@@ -743,13 +1140,65 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AccountUpdateResult"];
+                    "application/json": {
+                        messages: {
+                            name?: string;
+                            email?: string;
+                            password?: string;
+                        };
+                        errorMessages: {
+                            name?: string;
+                            email?: string;
+                            password?: string;
+                        };
+                        updated: ("name" | "email" | "password")[];
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Missing or invalid access token. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
     confirmEmailChange: {
@@ -759,7 +1208,7 @@ export interface operations {
                  * @description Token from the email link. Required in practice; if missing, the
                  *     endpoint responds with 400.
                  */
-                token?: components["parameters"]["TokenQuery"];
+                token?: string;
             };
             header?: never;
             path?: never;
@@ -773,21 +1222,58 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConfirmEmailChangeResponse"];
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                        newEmail: string | null;
+                        message: string;
+                    };
                 };
             };
-            400: components["responses"]["BadRequest"];
+            /** @description Invalid input. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
             /** @description The new email address is already in use by another account. */
             409: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Error"];
+                    "application/json": {
+                        message: string;
+                    };
                 };
             };
-            429: components["responses"]["TooManyRequests"];
-            500: components["responses"]["InternalServerError"];
+            /** @description Rate limit exceeded (only active in production). */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+            /** @description Unexpected server error. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
         };
     };
 }

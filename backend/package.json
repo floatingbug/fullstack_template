@@ -34,15 +34,6 @@
     "pino": "^10.1.0",
     "validator": "^13.15.23"
   },
-  "_moduleAliases": {
-    "@router": "src/router",
-    "@controller": "src/modules/controller",
-    "@config": "src/config",
-    "@models": "src/modules/models",
-    "@services": "src/modules/services",
-    "@utils": "src/utils",
-    "@middleware": "src/middleware"
-  },
   "devDependencies": {
     "@redocly/cli": "^2.72.1",
     "@types/bcrypt": "^6.0.0",
