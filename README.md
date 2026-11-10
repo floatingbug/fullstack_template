@@ -162,7 +162,7 @@ npm run format     # Prettier
 - [`frontend/src/shared/styles/README.md`](frontend/src/shared/styles/README.md) — design
   system, tokens, themes and how to adapt them
 
-New features are scaffolded with the `create-feature` skill in `.opencode/skills/create-feature`.
+New features are scaffolded with the `create-feature-frontend` skill in `.opencode/skills/create-feature-frontend`.
 
 ## Troubleshooting
 

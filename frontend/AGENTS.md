@@ -30,7 +30,9 @@ frontend/src/
 
 ## Features
 
-<!-- Aufbau eines Features (Komponenten, Composables, Store, Tests usw.) hier später ergänzen. -->
+- Neue Features immer mit dem Skill `create-feature-frontend` anlegen, nicht von Hand.
+- Bei Erweiterungen oder Anpassungen an einem bestehenden Feature: zuerst dessen Aufbau ansehen und die vorhandene Struktur, Benennung und Schichtung beibehalten. Keine neuen Muster einführen, die im Feature oder im Referenz-Feature `<name>` nicht vorkommen.
+- Weicht ein Feature vom Muster ab, nicht übernehmen, sondern nachfragen.
 
 ## Befehle (im Ordner `frontend/` ausführen)
 
