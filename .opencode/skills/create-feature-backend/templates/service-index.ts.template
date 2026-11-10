@@ -1,0 +1,5 @@
+import get__Name__ById from './get__Name__ById.js';
+
+export default {
+    get__Name__ById,
+};

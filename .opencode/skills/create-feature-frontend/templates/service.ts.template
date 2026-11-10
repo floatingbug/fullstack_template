@@ -1,0 +1,11 @@
+import type { __Name__ } from '@/shared/api/types'
+import { get__Name__Api } from '../api/get__Name__Api'
+import { get__Names__Api } from '../api/get__Names__Api'
+
+export function load__Name__(id: string): Promise<__Name__> {
+  return get__Name__Api(id)
+}
+
+export function load__Names__(): Promise<__Name__[]> {
+  return get__Names__Api()
+}

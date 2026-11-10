@@ -30,9 +30,11 @@ frontend/src/
 
 ## Features
 
-- Neue Features immer mit dem Skill `create-feature-frontend` anlegen, nicht von Hand.
-- Bei Erweiterungen oder Anpassungen an einem bestehenden Feature: zuerst dessen Aufbau ansehen und die vorhandene Struktur, Benennung und Schichtung beibehalten. Keine neuen Muster einführen, die im Feature oder im Referenz-Feature `<name>` nicht vorkommen.
-- Weicht ein Feature vom Muster ab, nicht übernehmen, sondern nachfragen.
+- Neue Features und neue Use-Cases in bestehenden Features immer mit dem Skill `create-feature-frontend` umsetzen. Das gilt auch für einzelne neue Views, API-Funktionen, Services, Store-Actions und Komponenten.
+- Fehlt das Feature, wird der angeforderte Use-Case vollständig angelegt. Bei einem allgemeinen Prompt ohne konkreten Use-Case zuerst nachfragen und kein vollständiges CRUD annehmen.
+- Ist das Feature bereits vorhanden, dessen Aufbau zuerst ansehen und vorhandene API-Funktionen, Services, Stores und Komponenten wiederverwenden. Nur fehlende Teile ergänzen und kein neues Feature-Verzeichnis oder parallele Strukturen für denselben Zweck anlegen.
+- Die Schichten und Importrichtungen beschreibt `.opencode/skills/create-feature-frontend/references/architecture.md`. Bei Erweiterungen haben die vorhandene Struktur, Benennung und Schichtung des Features Vorrang vor allgemeinen Templates.
+- Weicht ein Feature unklar vom dokumentierten Muster ab, die Abweichung nicht blind übernehmen, sondern nachfragen.
 
 ## Befehle (im Ordner `frontend/` ausführen)
 

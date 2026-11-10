@@ -1,3 +1,4 @@
+import type { RouteRecordRaw } from 'vue-router'
 import AppLayout from '@/app/layouts/AppLayout.vue'
 
 export default {
@@ -11,4 +12,4 @@ export default {
       meta: { requiresAuth: true },
     },
   ],
-}
+} satisfies RouteRecordRaw

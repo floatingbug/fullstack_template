@@ -156,13 +156,18 @@ npm run format     # Prettier
 - [`AGENTS.md`](AGENTS.md) — overall conventions, API contract, definition of done
 - [`backend/README.md`](backend/README.md) — backend setup and endpoint overview
 - [`backend/AGENTS.md`](backend/AGENTS.md) — backend architecture, data model, endpoints
+- [Backend feature architecture](.opencode/skills/create-feature-backend/references/architecture.md) —
+  feature structure and dependencies (router → controller → service → model)
 - [`frontend/AGENTS.md`](frontend/AGENTS.md) — frontend architecture, layout, styling, i18n
-- [`frontend/src/features/AGENTS.md`](frontend/src/features/AGENTS.md) — feature structure
-  (api → services → store → ui)
+- [Frontend feature architecture](.opencode/skills/create-feature-frontend/references/architecture.md) —
+  feature structure and dependencies (view → store → service → api)
 - [`frontend/src/shared/styles/README.md`](frontend/src/shared/styles/README.md) — design
   system, tokens, themes and how to adapt them
 
-New features are scaffolded with the `create-feature-frontend` skill in `.opencode/skills/create-feature-frontend`.
+New backend features and additional endpoints in existing features are implemented with the
+`create-feature-backend` skill in `.opencode/skills/create-feature-backend`. New frontend features
+and additional use-cases use the `create-feature-frontend` skill in
+`.opencode/skills/create-feature-frontend`.
 
 ## Troubleshooting
 

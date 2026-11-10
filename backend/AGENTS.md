@@ -36,7 +36,12 @@ backend/
 
 ## Features
 
-<!-- Aufbau eines Features (Router, Service, Repository, Tests usw.) hier später ergänzen. -->
+- Neue Features und neue Use-Cases in bestehenden Features immer mit dem Skill `create-feature-backend` umsetzen. Das gilt auch für einzelne neue Endpunkte, Controller, Services, Models und API-Tests.
+- `src/features/user/` ist das Referenz-Feature für die Struktur: `index.ts` als Express-Router, dann `controller/`, `services/` und bei Bedarf `models/` mit jeweils passenden `index.ts`-Dateien.
+- Fehlt das Feature, wird der angeforderte Use-Case einschließlich API-Vertrag, Router-Registrierung und API-Tests vollständig angelegt. Bei einem allgemeinen Prompt ohne konkreten Use-Case zuerst nachfragen und kein vollständiges CRUD annehmen.
+- Ist das Feature bereits vorhanden, dessen Aufbau zuerst ansehen und vorhandene Controller, Services, Models und Middleware wiederverwenden. Nur fehlende Teile ergänzen und keine parallelen Strukturen für denselben Zweck anlegen.
+- Der Aufrufpfad ist `Router → Controller → Service → Model → MongoDB`. Die Schichten und Importrichtungen beschreibt `.opencode/skills/create-feature-backend/references/architecture.md`. Bei Erweiterungen haben die vorhandenen Muster des Features Vorrang vor allgemeinen Templates.
+- Weicht ein Feature unklar vom Referenzmuster ab, die Abweichung nicht blind übernehmen, sondern nachfragen.
 
 ## Befehle (im Ordner `backend/` ausführen)
 

@@ -1,0 +1,13 @@
+import { getDb, ObjectId } from '../../../db/mongo.js';
+
+interface __Name__Document {
+    _id?: ObjectId;
+}
+
+export default async ({ __name__Id }: { __name__Id: string }) => {
+    const db = getDb();
+
+    return db.collection<__Name__Document>('__names__').findOne({
+        _id: new ObjectId(__name__Id),
+    });
+};

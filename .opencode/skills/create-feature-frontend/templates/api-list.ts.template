@@ -1,0 +1,6 @@
+import { apiFetch } from '@/shared/api/apiFetch'
+import type { __Name__ } from '@/shared/api/types'
+
+export function get__Names__Api(): Promise<__Name__[]> {
+  return apiFetch<__Name__[]>('/__names__')
+}

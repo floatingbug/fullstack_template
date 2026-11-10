@@ -1,4 +1,0 @@
-export const __name__Items = [
-  // TODO: ein Eintrag pro Feld oder Element, Schema:
-  // { id: "<id>", labelKey: "__name__.<id>" }
-];

@@ -1,0 +1,18 @@
+import models from '../models/index.js';
+import { AppError } from '../../../types/errors.js';
+
+interface Public__Name__ {
+    id: string;
+}
+
+export default async ({ __name__Id }: { __name__Id: string }): Promise<Public__Name__> => {
+    const __name__ = await models.findById({ __name__Id });
+
+    if (!__name__) {
+        throw new AppError(404, '__Name__ not found');
+    }
+
+    return {
+        id: String(__name__._id),
+    };
+};

@@ -1,0 +1,33 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { __Name__ } from '@/shared/api/types'
+import { get__Name__Api } from '../api/get__Name__Api'
+import { get__Names__Api } from '../api/get__Names__Api'
+import { load__Name__, load__Names__ } from './__name__Service'
+
+vi.mock('../api/get__Name__Api', () => ({ get__Name__Api: vi.fn() }))
+vi.mock('../api/get__Names__Api', () => ({ get__Names__Api: vi.fn() }))
+
+const mockedGet__Name__Api = vi.mocked(get__Name__Api)
+const mockedGet__Names__Api = vi.mocked(get__Names__Api)
+
+// Fixtures vollständig an das Schema aus dem API-Vertrag anpassen.
+const item = { id: '1' } as __Name__
+
+describe('__name__Service', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('lädt einen Datensatz über die API', async () => {
+    mockedGet__Name__Api.mockResolvedValue(item)
+
+    await expect(load__Name__('1')).resolves.toBe(item)
+    expect(mockedGet__Name__Api).toHaveBeenCalledWith('1')
+  })
+
+  it('lädt die Liste über die API', async () => {
+    mockedGet__Names__Api.mockResolvedValue([item])
+
+    await expect(load__Names__()).resolves.toEqual([item])
+  })
+})

@@ -1,5 +1,0 @@
-import { apiFetch } from '@/shared/api/apiFetch.js';
-
-export function get__Name__Api(id) {
-  return apiFetch(`/__names__/${id}`);
-}

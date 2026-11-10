@@ -89,6 +89,11 @@ test/                   node:test API tests
 dist/                   compiled output (npm run build)
 ```
 
+New features follow the `src/features/user/` structure and are implemented with the
+[`create-feature-backend` skill](../.opencode/skills/create-feature-backend/SKILL.md). Its
+[architecture reference](../.opencode/skills/create-feature-backend/references/architecture.md)
+describes the router → controller → service → model dependencies and the API-test conventions.
+
 ## Security notes
 
 ### Nodemailer advisory (Stand 2026-11-01)

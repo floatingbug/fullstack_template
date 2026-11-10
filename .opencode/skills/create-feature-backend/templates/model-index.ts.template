@@ -1,0 +1,5 @@
+import findById from './findById.js';
+
+export default {
+    findById,
+};

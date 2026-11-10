@@ -1,0 +1,5 @@
+import get__Name__ from './get__Name__.js';
+
+export default {
+    get__Name__,
+};

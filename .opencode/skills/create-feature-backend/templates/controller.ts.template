@@ -1,0 +1,10 @@
+import catchAsync from '../../../utils/catchAsync.js';
+import services from '../services/index.js';
+
+export default catchAsync(async (req, res) => {
+    const __name__ = await services.get__Name__ById({
+        __name__Id: req.params.__name__Id as string,
+    });
+
+    res.json(__name__);
+});

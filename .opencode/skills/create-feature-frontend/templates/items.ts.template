@@ -1,0 +1,8 @@
+export interface __Name__Item {
+  id: string
+  labelKey: `__name__.${string}`
+}
+
+export const __name__Items: __Name__Item[] = [
+  // Eintrag pro UI-Element, beispielsweise: { id: 'title', labelKey: '__name__.title' }
+]
